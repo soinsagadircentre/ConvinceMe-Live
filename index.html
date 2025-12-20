@@ -1,0 +1,2776 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>ConvinceMe - Show Live</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Polices futuristes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent-yellow: #facc15;
+      --accent-blue: #38bdf8;
+      --accent-white: #f9fafb;
+      --radius: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Exo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      font-size: 17px;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* TOPBAR */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 22px 6px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.35), transparent 55%),
+                  radial-gradient(circle at 100% 0, rgba(250,204,21,0.25), transparent 55%),
+                  rgba(15, 23, 42, 0.86);
+      backdrop-filter: blur(20px);
+      position: relative;
+      z-index: 20;
+      flex-wrap: wrap;
+    }
+
+    .topbar-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      border: 2px solid rgba(248, 250, 252, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 24px;
+      color: #020617;
+      background:
+              conic-gradient(from 140deg,
+                      #facc15,
+                      #38bdf8,
+                      #f9fafb,
+                      #facc15);
+      box-shadow: 0 0 18px rgba(248, 250, 252, 0.7);
+      object-fit: cover;
+    }
+
+    .topbar-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar-title span:first-child {
+      font-size: 19px;
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+
+    .topbar-title span:last-child {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .topbar-tag {
+      margin-left: auto;
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(127, 29, 29, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #fecaca;
+      box-shadow: 0 0 9px rgba(254, 202, 202, 0.9);
+      animation: live-blink 0.9s infinite alternate;
+    }
+
+    @keyframes live-blink {
+      from {
+        transform: scale(0.9);
+        opacity: 0.5;
+      }
+      to {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* Barre de progression */
+
+    .topbar-progress {
+      position: relative;
+      flex-basis: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .topbar-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-white), var(--accent-yellow));
+      box-shadow:
+        0 0 12px rgba(56, 189, 248, 0.7),
+        0 0 16px rgba(250, 204, 21, 0.7);
+      transition: width 0.4s ease;
+    }
+
+    main {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* COUCHE PARTICULES GLOBALES */
+
+    .particle-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+      mix-blend-mode: screen;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(248,250,252,1), transparent 70%);
+      opacity: 0.2;
+      animation: particle-move 12s linear infinite;
+    }
+
+    .particle:nth-child(1) { top: 10%; left: 5%;  animation-duration: 14s; }
+    .particle:nth-child(2) { top: 40%; left: 15%; animation-duration: 11s; }
+    .particle:nth-child(3) { top: 70%; left: 25%; animation-duration: 16s; }
+    .particle:nth-child(4) { top: 20%; left: 45%; animation-duration: 13s; }
+    .particle:nth-child(5) { top: 55%; left: 60%; animation-duration: 17s; }
+    .particle:nth-child(6) { top: 80%; left: 75%; animation-duration: 12s; }
+    .particle:nth-child(7) { top: 30%; left: 85%; animation-duration: 18s; }
+    .particle:nth-child(8) { top: 65%; left: 10%; animation-duration: 15s; }
+    .particle:nth-child(9) { top: 5%;  left: 55%; animation-duration: 19s; }
+    .particle:nth-child(10){ top: 90%; left: 35%; animation-duration: 20s; }
+
+    @keyframes particle-move {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      50% {
+        transform: translate3d(60px, -80px, 0) scale(1.3);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translate3d(-80px, 80px, 0) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    /* SLIDES – fade + zoom */
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 0;
+      color: var(--text);
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(0, 6px, 0) scale(0.97);
+      transition:
+        opacity 0.45s ease,
+        transform 0.45s ease;
+    }
+
+    .slide-inner {
+      max-width: 100%;
+      margin: 0 auto;
+      min-height: calc(100vh - 90px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+      transform: scale(1);
+      transform-origin: center;
+      transition: transform 0.45s ease, filter 0.45s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      animation: slide-enter 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .slide.active .slide-inner {
+      transform: scale(1);
+    }
+
+    .slide--opening.active {
+      animation: opening-bang 0.85s cubic-bezier(0.2, 0.9, 0.25, 1.15);
+    }
+
+    @keyframes slide-enter {
+      from {
+        opacity: 0;
+        transform: translate3d(40px, 10px, 0) scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    @keyframes opening-bang {
+      0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(40px);
+        filter: brightness(0.6);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1.05) translateY(-5px);
+        filter: brightness(1.2);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: brightness(1);
+      }
+    }
+
+    .slide-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+
+    .slide-title {
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      background: linear-gradient(
+              120deg,
+              var(--accent-blue),
+              var(--accent-white),
+              var(--accent-yellow),
+              var(--accent-blue)
+      );
+      background-size: 260% 260%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: title-gradient 4s ease-in-out infinite alternate;
+      text-shadow:
+              0 0 18px rgba(56, 189, 248, 0.5),
+              0 0 22px rgba(250, 204, 21, 0.5),
+              0 0 30px rgba(249, 250, 251, 0.6);
+    }
+
+    .slide--cloture .slide-title {
+      font-size: 44px;
+      letter-spacing: 0.3em;
+    }
+
+    .slide--final-logo .slide-title {
+      font-size: 34px;
+      letter-spacing: 0.2em;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .slide-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: stretch;
+      width: 100%;
+      max-width: 1200px;
+      /* plus de flex:1 → la hauteur suit le contenu */
+    }
+
+    .slide-body.full {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes title-gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* TIMER 5 MIN : slides dédiés, centrés */
+    #slide-defi1-timer .slide-body,
+    #slide-defi2-timer .slide-body,
+    #slide-defi3-timer .slide-body,
+    #slide-defi4-timer .slide-body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #slide-defi1-timer .card,
+    #slide-defi2-timer .card,
+    #slide-defi3-timer .card,
+    #slide-defi4-timer .card {
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* PAUSES 2 MIN : citation + timer côte à côte */
+    #slide-pause1 .slide-body,
+    #slide-pause2 .slide-body,
+    #slide-pause3 .slide-body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #slide-pause1 .card,
+    #slide-pause2 .card,
+    #slide-pause3 .card {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .pause-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .pause-row .quote {
+      flex: 2;
+    }
+
+    .pause-row .timer-block {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 900px) {
+      .slide-body,
+      .slide-body.full {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .slide-title {
+        font-size: 30px;
+        letter-spacing: 0.2em;
+      }
+      .slide--cloture .slide-title {
+        font-size: 32px;
+      }
+      .slide-inner {
+        padding: 16px 20px 16px;
+      }
+      .card {
+        padding: 18px 24px;
+      }
+      .slide--accueil .slide-body {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .timer-big {
+        width: 200px;
+        height: 200px;
+        font-size: 32px;
+      }
+      .duo-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .slide-inner {
+        padding: 16px 15px 16px;
+      }
+      .card {
+        padding: 16px 18px;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 55%),
+                  radial-gradient(circle at 100% 100%, rgba(250,204,21,0.18), transparent 55%),
+                  rgba(15, 23, 42, 0.94);
+      border-radius: var(--radius);
+      padding: 18px 36px;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .card-title {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .card p {
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .image-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .image-slot {
+      border-radius: 22px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: var(--muted);
+      text-align: center;
+      padding: 10px;
+    }
+
+    .image-slot--wide {
+      min-height: 160px;
+    }
+
+    .image-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+
+    /* SLIDE ACCUEIL – taille XXL */
+
+    .slide--accueil .slide-inner {
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .slide--accueil .slide-body {
+      align-items: center;
+      width: 100%;
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
+      max-height: none;
+    }
+
+    .slide--accueil .hero-title {
+      font-size: clamp(24px, 4vw, 48px);
+    }
+
+    @media (max-width: 1024px) {
+      .slide--accueil .slide-body {
+        grid-template-columns: 1fr;
+      }
+
+      .slide--accueil .card:last-child {
+        display: none;
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(28px, 5vw, 65px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      margin-bottom: 8px;
+      text-align: center;
+      font-family: "Orbitron", system-ui, sans-serif;
+      background: linear-gradient(
+              120deg,
+              var(--accent-blue),
+              var(--accent-white),
+              var(--accent-yellow),
+              var(--accent-blue)
+      );
+      background-size: 260% 260%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: title-gradient 4.5s ease-in-out infinite alternate;
+      text-shadow:
+              0 0 26px rgba(250, 204, 21, 0.9),
+              0 0 32px rgba(56, 189, 248, 0.7),
+              0 0 40px rgba(249, 250, 251, 0.8);
+    }
+
+    .slide--accueil .hero-slogan {
+      font-size: 22px;
+      font-style: italic;
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: hero-slogan-in 0.7s 0.28s ease-out forwards;
+    }
+
+    .hero-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.92);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: hero-strip-in 0.6s 0.36s ease-out forwards;
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .hero-chip {
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.06);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .hero-floating-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      opacity: 0;
+      animation: hero-badges-in 0.6s 0.45s ease-out forwards;
+    }
+
+    .floating-pill {
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .floating-pill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+              120deg,
+              transparent,
+              rgba(248, 250, 252, 0.22),
+              transparent
+      );
+      transform: translateX(-110%);
+      animation: pill-glow 3.4s infinite;
+    }
+
+    .floating-pill:nth-child(2)::after { animation-delay: 0.8s; }
+    .floating-pill:nth-child(3)::after { animation-delay: 1.6s; }
+    .floating-pill:nth-child(4)::after { animation-delay: 2.2s; }
+
+    @keyframes pill-glow {
+      0% { transform: translateX(-110%); }
+      100% { transform: translateX(110%); }
+    }
+
+    @keyframes hero-slogan-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes hero-strip-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes hero-badges-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-placeholder {
+      width: 300px;
+      height: 300px;
+      border-radius: 40px;
+      background:
+              conic-gradient(from 0deg,
+                      #f97316,
+                      #facc15,
+                      #38bdf8,
+                      #f9fafb,
+                      #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-weight: 900;
+      font-size: 34px;
+      color: #020617;
+      font-family: "Orbitron", system-ui, sans-serif;
+      box-shadow:
+              0 0 40px rgba(250, 204, 21, 0.9),
+              0 0 30px rgba(56, 189, 248, 0.8),
+              0 0 40px rgba(249, 250, 251, 0.9),
+              0 0 0 1px rgba(15, 23, 42, 1);
+      opacity: 0;
+      animation: logo-pop 0.75s 0.32s cubic-bezier(0.2, 0.9, 0.25, 1.2) forwards;
+    }
+
+    .logo-placeholder img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+      border-radius: 32px;
+    }
+
+    @keyframes logo-pop {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+      }
+      55% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.06);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1.02);
+      }
+    }
+
+    .logo-caption {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .slide--accueil .card p,
+    .slide--accueil .bullets li {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .bullets {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 17px;
+    }
+
+    .bullets li {
+      margin-bottom: 5px;
+    }
+
+    .quote {
+      font-size: 20px;
+      line-height: 1.5;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .quote::before {
+      content: "“";
+      position: absolute;
+      left: 0;
+      top: -10px;
+      font-size: 32px;
+      color: var(--accent-yellow);
+    }
+
+    .quote-author {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* TIMER – giga compteur */
+
+    .timer-block {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .timer-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .timer-big {
+      width: 320px;
+      height: 320px;
+      border-radius: 60px;
+      background: radial-gradient(circle at 30% 10%,
+              #facc15,
+              #f97316);
+      box-shadow:
+              0 0 40px rgba(250, 204, 21, 0.9),
+              0 0 25px rgba(249, 250, 251, 0.8),
+              0 0 0 3px rgba(15, 23, 42, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-variant-numeric: tabular-nums;
+      font-size: 56px;
+      font-weight: 900;
+      color: #111827;
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .timer-big.timer-warning {
+      background: radial-gradient(circle at 30% 10%, #f97316, #b91c1c);
+      box-shadow:
+        0 0 35px rgba(248, 113, 113, 0.9),
+        0 0 20px rgba(239, 68, 68, 0.8);
+      color: #f9fafb;
+      animation: timer-pulse 0.6s infinite alternate;
+    }
+
+    @keyframes timer-pulse {
+      from { transform: scale(1); }
+      to   { transform: scale(1.06); }
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      padding: 8px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 1);
+      color: var(--muted);
+      padding: 7px 14px;
+      font-size: 11px;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    /* SCORE / DUOS – bulles plus grandes */
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .score-card {
+      border-radius: 20px;
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 16px;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.7);
+    }
+
+    .slide--score .score-card {
+      font-size: 17px;
+    }
+
+    .score-name {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-size: 16px;
+    }
+
+    .score-status {
+      font-size: 13px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-ok {
+      background: rgba(22, 163, 74, 0.15);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.8);
+    }
+
+    .status-question {
+      background: rgba(55, 65, 81, 0.5);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    .duo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .duo-pill {
+      border-radius: 999px;
+      padding: 9px 14px;
+      text-align: center;
+      font-size: 16px;
+      font-family: "Orbitron", system-ui, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(37,99,235,0.9);
+      color: #bfdbfe;
+      box-shadow: 0 0 12px rgba(15,23,42,0.9);
+    }
+
+    .duo-pill--out {
+      background: radial-gradient(circle at 30% 10%, #7f1d1d, #b91c1c);
+      border-color: rgba(248, 113, 113, 0.95);
+      color: #fee2e2;
+      box-shadow: 0 0 18px rgba(248,113,113,0.7);
+    }
+
+    /* PODIUM */
+
+    .podium {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .podium-top {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .podium-bottom {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 620px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .podium .score-card {
+      text-align: center;
+    }
+
+    /* LAYOUT 2 DUOS EN HAUT / 2 EN BAS */
+
+    .score-4 {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .score-4-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .score-4-row .score-card {
+      flex: 1 1 220px;
+    }
+
+    /* POLL */
+
+    .poll-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .poll-label {
+      width: 190px;
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .poll-bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 1);
+      overflow: hidden;
+    }
+
+    .poll-fill {
+      height: 100%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-white), var(--accent-yellow));
+      box-shadow:
+              0 0 12px rgba(56, 189, 248, 0.7),
+              0 0 14px rgba(250, 204, 21, 0.7);
+    }
+
+    .poll-value {
+      width: 50px;
+      text-align: right;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* BACKGROUNDS animés généraux */
+
+    .slide--accueil,
+    .slide--programme,
+    .slide--duos-start,
+    .slide--duos-after-defi1,
+    .slide--duos-after-defi2,
+    .slide--defi1,
+    .slide--defi2,
+    .slide--defi3,
+    .slide--defi4,
+    .slide--pause,
+    .slide--vote,
+    .slide--vote-final,
+    .slide--score,
+    .slide--resultats,
+    .slide--food,
+    .slide--remerciements {
+      background:
+              radial-gradient(circle at 0% 0%, rgba(250, 204, 21, 0.25), transparent 55%),
+              radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.3), transparent 55%),
+              radial-gradient(circle at 50% 30%, rgba(248, 250, 252, 0.14), transparent 60%),
+              #020617;
+      background-size: 120% 120%;
+      animation:
+        bg-pulse 10s ease-in-out infinite alternate,
+        bg-shift 22s linear infinite;
+    }
+
+    /* Clôture : fond proche du final */
+    .slide--cloture {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,0.5), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(250,204,21,0.45), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(59,130,246,0.45), transparent 55%),
+        #020617;
+      background-size: 160% 160%;
+      animation:
+        bg-pulse 9s ease-in-out infinite alternate,
+        mega-bg-rotate 24s linear infinite;
+    }
+
+    @keyframes bg-pulse {
+      0%   { filter: brightness(1); }
+      50%  { filter: brightness(1.12); }
+      100% { filter: brightness(1); }
+    }
+
+    @keyframes bg-shift {
+      0%   { background-position: 0% 0%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 100%; }
+    }
+
+    /* PAUSE BUBBLES */
+
+    .bubble-layer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bubble {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.35);
+      background: radial-gradient(circle at 30% 20%,
+              rgba(248, 250, 252, 0.5),
+              transparent 60%);
+      opacity: 0.8;
+      animation: bubble-float 14s linear infinite;
+    }
+
+    .bubble:nth-child(1) {
+      left: 10%;
+      bottom: -80px;
+      animation-duration: 16s;
+    }
+
+    .bubble:nth-child(2) {
+      left: 40%;
+      bottom: -70px;
+      width: 100px;
+      height: 100px;
+      animation-duration: 20s;
+      animation-delay: 2s;
+    }
+
+    .bubble:nth-child(3) {
+      left: 70%;
+      bottom: -90px;
+      width: 75px;
+      height: 75px;
+      animation-duration: 13s;
+      animation-delay: 4s;
+    }
+
+    .bubble:nth-child(4) {
+      left: 85%;
+      bottom: -60px;
+      width: 55px;
+      height: 55px;
+      animation-duration: 18s;
+      animation-delay: 1s;
+    }
+
+    @keyframes bubble-float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-45vh) translateX(10px);
+      }
+      100% {
+        transform: translateY(-90vh) translateX(-10px);
+        opacity: 0;
+      }
+    }
+
+    /* ORBS – bulles lumineuses */
+
+    .orb-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(6px);
+      opacity: 0.65;
+      animation: orb-move 16s ease-in-out infinite alternate;
+    }
+
+    .orb--gold {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle at 30% 20%, rgba(250, 204, 21, 0.95), transparent 70%);
+      box-shadow:
+              0 0 36px rgba(250, 204, 21, 0.9),
+              0 0 26px rgba(249, 250, 251, 0.7);
+    }
+
+    .orb--blue {
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle at 40% 30%, rgba(56, 189, 248, 0.95), transparent 70%);
+      box-shadow: 0 0 34px rgba(56, 189, 248, 0.9);
+    }
+
+    .orb--white {
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle at 40% 30%, rgba(248, 250, 252, 0.9), transparent 70%);
+      box-shadow: 0 0 36px rgba(248, 250, 252, 0.9);
+      opacity: 0.5;
+    }
+
+    .orb--1 { top: -60px; left: -60px; }
+    .orb--2 { top: 55%; right: -80px; animation-duration: 18s; }
+    .orb--3 { bottom: -70px; left: 55%; animation-duration: 20s; }
+
+    @keyframes orb-move {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translate3d(25px, -25px, 0) scale(1.07);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate3d(-25px, 25px, 0) scale(1.03);
+        opacity: 0.6;
+      }
+    }
+
+    /* ORGANISATEURS */
+
+    .organizers-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .slide--remerciements .slide-inner {
+      justify-content: center;
+    }
+
+    .slide--remerciements .organizers-wrapper {
+      height: 100%;
+      justify-content: center;
+    }
+
+    .organizers-intro {
+      font-size: 18px;
+      text-align: center;
+      max-width: 680px;
+    }
+
+    .organizers-thanks {
+      font-size: 15px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .organizers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 28px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    @media (max-width: 800px) {
+      .organizers-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .organizer-card {
+      border-radius: 999px;
+      padding: 14px 18px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .organizers-grid .organizer-card:nth-child(odd) {
+      justify-content: flex-start;
+      flex-direction: row;
+    }
+
+    .organizers-grid .organizer-card:nth-child(even) {
+      justify-content: flex-start;
+      flex-direction: row-reverse;
+    }
+
+    .organizer-photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      overflow: hidden;
+      background: radial-gradient(circle at 30% 20%,
+        rgba(248,250,252,0.08),
+        transparent 60%);
+      flex-shrink: 0;
+    }
+
+    .organizer-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .organizer-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .organizer-name {
+      font-family: "Orbitron", system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 13px;
+    }
+
+    .organizer-role {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* SLIDE FINAL */
+
+    .slide--final-logo {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,0.5), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(250,204,21,0.5), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(239,68,68,0.45), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(59,130,246,0.45), transparent 55%),
+        #020617;
+      background-size: 180% 180%;
+      animation:
+        bg-pulse 8s ease-in-out infinite alternate,
+        mega-bg-rotate 20s linear infinite;
+    }
+
+    @keyframes mega-bg-rotate {
+      0%   { background-position: 0% 0%; }
+      25%  { background-position: 100% 0%; }
+      50%  { background-position: 100% 100%; }
+      75%  { background-position: 0% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    .slide--final-logo .slide-inner {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .final-logo-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .final-logo-glow {
+      width: 320px;
+      height: 320px;
+      border-radius: 999px;
+      background:
+        conic-gradient(from 0deg,
+          #f97316,
+          #facc15,
+          #38bdf8,
+          #f9fafb,
+          #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 80px rgba(250, 204, 21, 0.95),
+        0 0 70px rgba(56, 189, 248, 0.9),
+        0 0 60px rgba(248, 250, 252, 1);
+      animation: final-logo-pulse 5s ease-in-out infinite alternate;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-logo-glow::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 20% 0%,
+        rgba(248,250,252,0.4),
+        transparent 60%);
+      mix-blend-mode: screen;
+      animation: final-light-sweep 6s linear infinite;
+    }
+
+    .final-logo-glow img {
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      border-radius: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes final-logo-pulse {
+      0%   { transform: scale(1);   filter: brightness(1); }
+      50%  { transform: scale(1.05); filter: brightness(1.15); }
+      100% { transform: scale(1.02); filter: brightness(1.05); }
+    }
+
+    @keyframes final-light-sweep {
+      0%   { transform: translateX(-20%) translateY(0); opacity: 0.4; }
+      50%  { transform: translateX(10%) translateY(-10%); opacity: 0.8; }
+      100% { transform: translateX(30%) translateY(10%); opacity: 0.4; }
+    }
+
+    .final-text-main {
+      font-size: 20px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-family: "Orbitron", system-ui, sans-serif;
+    }
+
+    .final-text-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* Clôture : 3 grosses bulles */
+
+    .slide--cloture .slide-inner {
+      justify-content: center;
+    }
+
+    .closing-bubbles {
+      max-width: 1020px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .text-bubble {
+      border-radius: 999px;
+      padding: 18px 26px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      font-size: 19px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex: 1;
+      min-height: 210px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.85);
+    }
+
+    .text-bubble small {
+      font-size: 15px;
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 900px) {
+      .closing-bubbles {
+        flex-direction: column;
+      }
+      .text-bubble {
+        min-height: 0;
+      }
+    }
+
+    footer {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      padding: 4px 0 6px;
+    }
+
+    /* DÉFIS : titres + textes boostés */
+
+    .slide--defi1 .slide-title,
+    .slide--defi2 .slide-title,
+    .slide--defi3 .slide-title,
+    .slide--defi4 .slide-title {
+      font-size: 44px;
+      letter-spacing: 0.28em;
+    }
+
+    .slide--defi1 .card p,
+    .slide--defi2 .card p,
+    .slide--defi3 .card p,
+    .slide--defi4 .card p,
+    .slide--defi1 .bullets li,
+    .slide--defi2 .bullets li,
+    .slide--defi3 .bullets li,
+    .slide--defi4 .bullets li {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .slide--programme .slide-title {
+      font-size: 44px;
+    }
+
+    .slide--programme .card p,
+    .slide--programme .bullets li {
+      font-size: 18px;
+    }
+
+    /* Effet de lumière lors du changement de slide */
+
+    .app::after {
+      content: "";
+      position: fixed;
+      inset: -10%;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(circle at 0% 50%,
+        rgba(248,250,252,0.25),
+        transparent 60%);
+      transform: translateX(-30%);
+    }
+
+    .app.transition-flash::after {
+      animation: light-sweep 0.6s ease-out forwards;
+    }
+
+    @keyframes light-sweep {
+      0%   { opacity: 0; transform: translateX(-30%); }
+      40%  { opacity: 0.5; transform: translateX(10%); }
+      100% { opacity: 0; transform: translateX(40%); }
+    }
+
+
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <img src="images/ConvinceMe.png" class="topbar-logo" alt="Logo ConvinceMe">
+    <div class="topbar-title">
+      <span>ConvinceMe</span>
+      <span>Show live · Soirée spéciale</span>
+    </div>
+    <div class="topbar-tag">
+      <span class="live-dot"></span>
+      En direct
+    </div>
+    <div class="topbar-progress">
+      <div class="topbar-progress-fill"></div>
+    </div>
+  </header>
+
+  <div class="particle-layer">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <main>
+    <!-- 1 · ACCUEIL -->
+    <section class="slide slide--accueil slide--opening active" id="slide-accueil">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--2"></div>
+        <div class="orb orb--white orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">ConvinceMe Live</h1>
+          <span class="slide-subtitle">Bienvenue sur le plateau</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Ce soir</div>
+              <div class="hero-strip">
+                <span class="hero-chip">Duos</span>
+                <span class="hero-chip">Défis</span>
+                <span class="hero-chip">Public</span>
+                <span class="hero-chip">Jury</span>
+              </div>
+              <div class="hero-title">ConvinceMe</div>
+              <div class="hero-slogan">« Le show où tout se joue en quelques minutes »</div>
+              <p>4 défis, des éliminations, un duo gagnant.</p>
+              <div class="hero-floating-badges">
+                <div class="floating-pill">Storytelling</div>
+                <div class="floating-pill">Vente renversée</div>
+                <div class="floating-pill">Bad Buzz</div>
+                <div class="floating-pill">Vends-moi ça</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div>
+              <div class="card-title">Identité</div>
+              <div class="logo-placeholder">
+                <img src="images/ConvinceMe.png" alt="Logo ConvinceMe">
+              </div>
+              <div class="logo-caption">
+                ConvinceMe · Soirée spéciale vente & storytelling
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · PROGRAMME -->
+    <section class="slide slide--programme" id="slide-programme">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Déroulé</h1>
+          <span class="slide-subtitle">Vue public</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Temps forts</div>
+              <ul class="bullets">
+                <li>Défi 1 · Storytelling</li>
+                <li>Défi 2 · Vente renversée</li>
+                <li>Défi 3 · Bad Buzz</li>
+                <li>Défi 4 · Vends-moi ça</li>
+                <li>Vote du public</li>
+                <li>Annonce du duo gagnant</li>
+              </ul>
+              <p style="margin-top:10px;">
+                Restez prêts à réagir, applaudir, voter.
+              </p>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                <img src="images/déroulé.jpeg" alt="Déroulé de la soirée">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · LISTE INITIALE DES 15 DUOS -->
+    <section class="slide slide--duos-start" id="slide-duos-start">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Les duos</h1>
+          <span class="slide-subtitle">15 équipes en lice</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">En compétition</div>
+              <div class="duo-grid">
+                <div class="duo-pill">Duo 1</div>
+                <div class="duo-pill">Duo 2</div>
+                <div class="duo-pill">Duo 3</div>
+                <div class="duo-pill">Duo 4</div>
+                <div class="duo-pill">Duo 5</div>
+                <div class="duo-pill">Duo 6</div>
+                <div class="duo-pill">Duo 7</div>
+                <div class="duo-pill">Duo 8</div>
+                <div class="duo-pill">Duo 9</div>
+                <div class="duo-pill">Duo 10</div>
+                <div class="duo-pill">Duo 11</div>
+                <div class="duo-pill">Duo 12</div>
+                <div class="duo-pill">Duo 13</div>
+                <div class="duo-pill">Duo 14</div>
+                <div class="duo-pill">Duo 15</div>
+              </div>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                <img src="images/Duo.png" alt="Duos en compétition">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · DÉFI 1 -->
+    <section class="slide slide--defi1" id="slide-defi1">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Storytelling</h1>
+          <span class="slide-subtitle">Raconter pour convaincre</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Sur scène</div>
+              <p>
+                Les duos transforment une simple situation en histoire
+                qui accroche toute la salle.
+              </p>
+              <ul class="bullets">
+                <li>Un début qui capte.</li>
+                <li>Une histoire qu’on visualise.</li>
+                <li>Une chute qui marque.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel défi 1</div>
+              <div class="image-slot">
+                <img src="images/storytelling.png" alt="Storytelling">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · TIMER DÉFI 1 -->
+    <section class="slide slide--defi1" id="slide-defi1-timer">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Storytelling</h1>
+          <span class="slide-subtitle">Temps par duo</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Chrono défi 1</div>
+              <div class="timer-block">
+                <div class="timer-big timer-display" data-duration="300">05:00</div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · APRÈS DÉFI 1 -->
+    <section class="slide slide--duos-after-defi1" id="slide-duos-after-defi1">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Après le défi 1</h1>
+          <span class="slide-subtitle">3 duos éliminés</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Situation des duos</div>
+              <div class="duo-grid">
+                <div class="duo-pill">Duo 1</div>
+                <div class="duo-pill">Duo 2</div>
+                <div class="duo-pill">Duo 3</div>
+                <div class="duo-pill">Duo 4</div>
+                <div class="duo-pill">Duo 5</div>
+                <div class="duo-pill">Duo 6</div>
+                <div class="duo-pill">Duo 7</div>
+                <div class="duo-pill">Duo 8</div>
+                <div class="duo-pill">Duo 9</div>
+                <div class="duo-pill">Duo 10</div>
+                <div class="duo-pill">Duo 11</div>
+                <div class="duo-pill">Duo 12</div>
+                <div class="duo-pill duo-pill--out">Duo 13</div>
+                <div class="duo-pill duo-pill--out">Duo 14</div>
+                <div class="duo-pill duo-pill--out">Duo 15</div>
+              </div>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                Photo réaction jury / public
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · PAUSE 2 MIN -->
+    <section class="slide slide--pause" id="slide-pause1">
+      <div class="bubble-layer">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vous pouvez discuter</h1>
+          <span class="slide-subtitle">2 minutes entre vous</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Moment inspirant</div>
+              <div class="pause-row">
+                <div class="quote">
+                  La vente n’est pas ce que vous faites à quelqu’un,
+                  c’est ce que vous faites pour quelqu’un.
+                  <div class="quote-author">— Jeffrey Gitomer</div>
+                </div>
+                <div class="timer-block">
+                  <div class="timer-big timer-display" data-duration="120">02:00</div>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · DÉFI 2 -->
+    <section class="slide slide--defi2" id="slide-defi2">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vente renversée</h1>
+          <span class="slide-subtitle">« Ne l’achetez surtout pas »</span>
+        </div>
+        <div class="slide-body">
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel défi 2</div>
+              <div class="image-slot">
+                <img src="images/vente.png" alt="Vente renversée">
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div>
+              <div class="card-title">Sur scène</div>
+              <p>
+                Les duos déconseillent un produit… en le rendant encore plus
+                intéressant.
+              </p>
+              <ul class="bullets">
+                <li>Beaucoup d’humour.</li>
+                <li>Exagération et second degré.</li>
+                <li>Et à la fin, envie d’acheter quand même.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · TIMER DÉFI 2 -->
+    <section class="slide slide--defi2" id="slide-defi2-timer">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vente renversée</h1>
+          <span class="slide-subtitle">Temps par duo</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Chrono défi 2</div>
+              <div class="timer-block">
+                <div class="timer-big timer-display" data-duration="300">05:00</div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · APRÈS DÉFI 2 -->
+    <section class="slide slide--duos-after-defi2" id="slide-duos-after-defi2">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Après le défi 2</h1>
+          <span class="slide-subtitle">Encore des éliminations</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Situation des duos</div>
+              <div class="duo-grid">
+                <div class="duo-pill">Duo 1</div>
+                <div class="duo-pill">Duo 2</div>
+                <div class="duo-pill">Duo 3</div>
+                <div class="duo-pill">Duo 4</div>
+                <div class="duo-pill">Duo 5</div>
+                <div class="duo-pill">Duo 6</div>
+                <div class="duo-pill">Duo 7</div>
+                <div class="duo-pill">Duo 8</div>
+                <div class="duo-pill duo-pill--out">Duo 9</div>
+                <div class="duo-pill duo-pill--out">Duo 10</div>
+                <div class="duo-pill duo-pill--out">Duo 11</div>
+                <div class="duo-pill duo-pill--out">Duo 12</div>
+                <div class="duo-pill duo-pill--out">Duo 13</div>
+                <div class="duo-pill duo-pill--out">Duo 14</div>
+                <div class="duo-pill duo-pill--out">Duo 15</div>
+              </div>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                Scoreboard / réactions
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · PAUSE 2 MIN -->
+    <section class="slide slide--pause" id="slide-pause2">
+      <div class="bubble-layer">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vous pouvez discuter</h1>
+          <span class="slide-subtitle">2 minutes entre vous</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Petite pause</div>
+              <div class="pause-row">
+                <div class="quote">
+                  On n’achète pas un produit, on achète la manière dont il nous fait nous sentir.
+                  <div class="quote-author">— Citation vente</div>
+                </div>
+                <div class="timer-block">
+                  <div class="timer-big timer-display" data-duration="120">02:00</div>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 · DÉFI 3 (Bad Buzz) -->
+    <section class="slide slide--defi3" id="slide-defi3">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Bad Buzz</h1>
+          <span class="slide-subtitle">Mode crise</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Sur scène</div>
+              <p>
+                Un faux scandale explose. Les duos doivent sauver la réputation
+                comme si tout Internet regardait.
+              </p>
+              <ul class="bullets">
+                <li>Calmer la tempête.</li>
+                <li>Répondre avec sang-froid.</li>
+                <li>Retourner la situation.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel défi 3</div>
+              <div class="image-slot">
+                <img src="images/badbuzz.png" alt="Bad Buzz">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 · TIMER DÉFI 3 (Bad Buzz) -->
+    <section class="slide slide--defi3" id="slide-defi3-timer">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Bad Buzz</h1>
+          <span class="slide-subtitle">Temps par duo</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Chrono défi 3</div>
+              <div class="timer-block">
+                <div class="timer-big timer-display" data-duration="300">05:00</div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 · PAUSE 2 MIN (avant finale) -->
+    <section class="slide slide--pause" id="slide-pause3">
+      <div class="bubble-layer">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Dernière pause</h1>
+          <span class="slide-subtitle">2 minutes avant la finale</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Respirez</div>
+              <div class="pause-row">
+                <div class="quote">
+                  Les gens n’achètent pas des produits, ils achètent des histoires
+                  dans lesquelles ils se reconnaissent.
+                  <div class="quote-author">— Citation storytelling</div>
+                </div>
+                <div class="timer-block">
+                  <div class="timer-big timer-display" data-duration="120">02:00</div>
+                  </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 · ENCORE EN COMPÉTITION (4 duos) -->
+    <section class="slide slide--score" id="slide-scoreboard">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--2"></div>
+        <div class="orb orb--gold orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Encore en compétition</h1>
+          <span class="slide-subtitle">Les 4 derniers duos</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Toujours dans le jeu</div>
+
+              <div class="score-4">
+                <div class="score-4-row">
+                  <div class="score-card">
+                    <span class="score-name">Duo 1</span>
+                    <span class="score-status status-ok">● En compétition</span>
+                  </div>
+                  <div class="score-card">
+                    <span class="score-name">Duo 3</span>
+                    <span class="score-status status-ok">● En compétition</span>
+                  </div>
+                </div>
+                <div class="score-4-row">
+                  <div class="score-card">
+                    <span class="score-name">Duo 5</span>
+                    <span class="score-status status-ok">● En compétition</span>
+                  </div>
+                  <div class="score-card">
+                    <span class="score-name">Duo 8</span>
+                    <span class="score-status status-ok">● En compétition</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                Photo / visuel des 4 duos
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 · DÉFI 4 (Vends-moi ça) -->
+    <section class="slide slide--defi4" id="slide-defi4">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vends-moi ça</h1>
+          <span class="slide-subtitle">Impro totale</span>
+        </div>
+        <div class="slide-body">
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel défi 4</div>
+              <div class="image-slot">
+                <img src="images/vendmoica.png" alt="Vends-moi ça">
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div>
+              <div class="card-title">Sur scène</div>
+              <p>
+                Un objet surprise apparaît. Les duos doivent le vendre
+                sans préparation.
+              </p>
+              <ul class="bullets">
+                <li>Réaction rapide.</li>
+                <li>Créativité totale.</li>
+                <li>Derniers moments pour se démarquer.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 · TIMER DÉFI 4 (Vends-moi ça) -->
+    <section class="slide slide--defi4" id="slide-defi4-timer">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--1"></div>
+        <div class="orb orb--gold orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vends-moi ça</h1>
+          <span class="slide-subtitle">Temps par duo</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Chrono défi 4</div>
+              <div class="timer-block">
+                <div class="timer-big timer-display" data-duration="300">05:00</div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost js-start-timer">Start</button>
+                <button class="btn btn-ghost js-reset-timer">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 · VOTE PUBLIC – DUOS FINALISTES -->
+    <section class="slide slide--vote-final" id="slide-vote-final">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Vote du public</h1>
+          <span class="slide-subtitle">Duos finalistes</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Quel duo doit gagner selon vous ?</div>
+
+              <div class="poll-row">
+                <div class="poll-label">Duo A</div>
+                <div class="poll-bar">
+                  <div class="poll-fill" style="width: 0%;"></div>
+                </div>
+                <div class="poll-value">0%</div>
+              </div>
+
+              <div class="poll-row">
+                <div class="poll-label">Duo B</div>
+                <div class="poll-bar">
+                  <div class="poll-fill" style="width: 0%;"></div>
+                </div>
+                <div class="poll-value">0%</div>
+              </div>
+
+              <div class="poll-row">
+                <div class="poll-label">Duo C</div>
+                <div class="poll-bar">
+                  <div class="poll-fill" style="width: 0%;"></div>
+                </div>
+                <div class="poll-value">0%</div>
+              </div>
+
+              <div class="poll-row">
+                <div class="poll-label">Duo D</div>
+                <div class="poll-bar">
+                  <div class="poll-fill" style="width: 0%;"></div>
+                </div>
+                <div class="poll-value">0%</div>
+              </div>
+
+              <div style="margin-top:16px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+                <div style="flex:1; min-width:220px;">
+                  <p style="margin:0 0 4px 0;">
+                    Scannez pour accéder au vote du public.
+                  </p>
+                </div>
+
+                <div style="
+                  width:130px;
+                  height:130px;
+                  border-radius:18px;
+                  overflow:hidden;
+                  box-shadow:0 0 20px rgba(248,250,252,0.35);
+                ">
+                  <img src="images/qr-vote.jpg" alt="QR code vote du public"
+                       style="width:100%; height:100%; object-fit:cover;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                <img src="images/qrcode.jpeg" alt="Vote">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19 · SLIDE HUMOUR FOOD -->
+    <section class="slide slide--food" id="slide-food">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Ne vous inquiétez pas</h1>
+          <span class="slide-subtitle">Oui, vous allez manger</span>
+        </div>
+        <div class="slide-body">
+          <div class="card">
+            <div>
+              <div class="card-title">Message au public</div>
+              <p>
+                Restez bien jusqu’à la fin :  
+                on ne laisse pas partir des vendeurs affamés.
+              </p>
+              <p>
+                Promis, il y a de quoi recharger vos batteries après la finale.  
+                (Et non, ce n’est pas un défi : vous avez le droit d’accepter.)
+              </p>
+            </div>
+          </div>
+          <div class="card image-card">
+            <div>
+              <div class="card-title">Visuel</div>
+              <div class="image-slot">
+                <img src="images/buffet.jpeg" alt="Buffet">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20 · RÉSULTATS (podium) -->
+    <section class="slide slide--resultats" id="slide-resultats">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">And the winner is…</h1>
+          <span class="slide-subtitle">Podium</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Podium</div>
+              <div class="podium">
+                <div class="podium-top">
+                  <div class="score-card">
+                    <span class="score-name">🥇 Duo gagnant</span>
+                    <span class="score-status status-ok">● Gagnant</span>
+                  </div>
+                </div>
+                <div class="podium-bottom">
+                  <div class="score-card">
+                    <span class="score-name">🥈 Duo finaliste</span>
+                    <span class="score-status status-question">● Finaliste</span>
+                  </div>
+                  <div class="score-card">
+                    <span class="score-name">🥉 Duo finaliste</span>
+                    <span class="score-status status-question">● Finaliste</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top:16px;">
+                <div class="image-slot image-slot--wide">
+                  Photo du duo gagnant / remise de prix
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21 · VOTE AVIS PUBLIC -->
+    <section class="slide slide--vote" id="slide-vote-defis">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Votre avis</h1>
+          <span class="slide-subtitle">ConvinceMe</span>
+        </div>
+        <div class="slide-body full">
+          <div class="card">
+            <div>
+              <div class="card-title">Est-ce que vous avez aimé ce soir ?</div>
+
+              <div class="poll-row">
+                <div class="poll-label">J’ai aimé</div>
+                <div class="poll-bar">
+                  <div class="poll-fill" style="width: 0%;"></div>
+                </div>
+                <div class="poll-value">0%</div>
+              </div>
+
+              <div class="poll-row">
+                <div class="poll-label">Je n’ai pas aimé</div>
+                <div class="poll-bar">
+                  <div class="poll-fill" style="width: 0%;"></div>
+                </div>
+                <div class="poll-value">0%</div>
+              </div>
+
+              <div style="margin-top:18px; display:flex; gap:18px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:220px;">
+                  <p style="margin:0 0 4px 0; font-weight:600;">
+                    1 — Voter : vous avez aimé ou pas
+                  </p>
+                  <p style="margin:0 0 8px 0; font-size:13px; color:var(--muted);">
+                    Scannez pour répondre « J’ai aimé / Je n’ai pas aimé ».
+                  </p>
+                  <div style="
+                    width:130px;
+                    height:130px;
+                    border-radius:18px;
+                    overflow:hidden;
+                    box-shadow:0 0 20px rgba(248,250,252,0.35);
+                  ">
+                    <img src="images/qr-avis.jpg" alt="QR code j'ai aimé / j'ai pas aimé"
+                         style="width:100%; height:100%; object-fit:cover;">
+                  </div>
+                </div>
+
+                <div style="flex:1; min-width:220px;">
+                  <p style="margin:0 0 4px 0; font-weight:600;">
+                    2 — Donner votre avis détaillé
+                  </p>
+                  <p style="margin:0 0 8px 0; font-size:13px; color:var(--muted);">
+                    Idées de défis, remarques, ce que vous avez préféré…
+                  </p>
+                  <div style="
+                    width:130px;
+                    height:130px;
+                    border-radius:18px;
+                    overflow:hidden;
+                    box-shadow:0 0 20px rgba(248,250,252,0.35);
+                  ">
+                    <img src="images/qr-commentaire.jpg" alt="QR code donner son avis"
+                         style="width:100%; height:100%; object-fit:cover;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22 · REMERCIEMENTS ORGANISATEURS -->
+    <section class="slide slide--remerciements" id="slide-organisateurs">
+      <div class="orb-layer">
+        <div class="orb orb--gold orb--1"></div>
+        <div class="orb orb--blue orb--2"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Merci aux organisateurs</h1>
+          <span class="slide-subtitle">L’équipe ConvinceMe</span>
+        </div>
+        <div class="slide-body full">
+          <div class="organizers-wrapper">
+            <p class="organizers-intro">
+              Un grand merci à l’équipe qui a porté ConvinceMe du premier brainstorming
+              jusqu’à ce soir.
+            </p>
+
+            <div class="organizers-grid">
+              <div class="organizer-card">
+                <div class="organizer-photo">
+                  Photo organisateur 1
+                  <!-- <img src="..." alt="Nom 1"> -->
+                </div>
+                <div class="organizer-info">
+                  <div class="organizer-name">Nom 1</div>
+                  <div class="organizer-role">Organisation & logistique</div>
+                </div>
+              </div>
+
+              <div class="organizer-card">
+                <div class="organizer-photo">
+                  Photo organisateur 2
+                </div>
+                <div class="organizer-info">
+                  <div class="organizer-name">Nom 2</div>
+                  <div class="organizer-role">Scénario & contenus</div>
+                </div>
+              </div>
+
+              <div class="organizer-card">
+                <div class="organizer-photo">
+                  Photo organisateur 3
+                </div>
+                <div class="organizer-info">
+                  <div class="organizer-name">Nom 3</div>
+                  <div class="organizer-role">Relation jury & invités</div>
+                </div>
+              </div>
+
+              <div class="organizer-card">
+                <div class="organizer-photo">
+                  Photo organisateur 4
+                </div>
+                <div class="organizer-info">
+                  <div class="organizer-name">Nom 4</div>
+                  <div class="organizer-role">Design & visuels</div>
+                </div>
+              </div>
+
+              <div class="organizer-card">
+                <div class="organizer-photo">
+                  Photo organisateur 5
+                </div>
+                <div class="organizer-info">
+                  <div class="organizer-name">Nom 5</div>
+                  <div class="organizer-role">Technique & son</div>
+                </div>
+              </div>
+
+              <div class="organizer-card">
+                <div class="organizer-photo">
+                  Photo organisateur 6
+                </div>
+                <div class="organizer-info">
+                  <div class="organizer-name">Nom 6</div>
+                  <div class="organizer-role">Coordination générale</div>
+                </div>
+              </div>
+            </div>
+
+            <p class="organizers-thanks">
+              Sans vous, ce show n’aurait pas eu la même énergie.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 23 · CLÔTURE -->
+    <section class="slide slide--cloture" id="slide-cloture">
+      <div class="orb-layer">
+        <div class="orb orb--blue orb--2"></div>
+        <div class="orb orb--white orb--3"></div>
+      </div>
+      <div class="slide-inner">
+        <div class="slide-header">
+          <h1 class="slide-title">Merci à tous</h1>
+          <span class="slide-subtitle">ConvinceMe</span>
+        </div>
+        <div class="slide-body full">
+          <div class="closing-bubbles">
+            <div class="text-bubble">
+              Aux duos qui ont osé monter sur scène et jouer le jeu jusqu’au bout.
+            </div>
+            <div class="text-bubble">
+              Au public qui a applaudi, voté, réagi, et donné toute l’énergie de la salle.
+            </div>
+            <div class="text-bubble">
+              Au jury et à l’équipe technique qui ont porté ce show.
+              <small>ConvinceMe, c’est fini pour ce soir… mais vos idées continuent.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 24 · SLIDE FINAL -->
+    <section class="slide slide--final-logo" id="slide-final-logo">
+      <div class="slide-inner">
+        <div class="final-logo-wrapper">
+          <div class="final-logo-glow">
+            <img src="images/ConvinceMe.png" alt="ConvinceMe">
+          </div>
+          <div class="final-text-main">Merci & bonne soirée</div>
+          <div class="final-text-sub">
+            ConvinceMe · On se retrouve pour la prochaine édition.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+
+  <footer>
+    ConvinceMe · Show live · 2025
+  </footer>
+</div>
+
+<script>
+  var slides = Array.from(document.querySelectorAll(".slide"));
+  var timerInterval = null;
+  var timerRemaining = 0;
+  var timerDisplayEl = null;
+  var progressFill = document.querySelector(".topbar-progress-fill");
+
+  function updateProgress() {
+    if (!progressFill || !slides.length) return;
+    var active = document.querySelector(".slide.active");
+    var index = slides.indexOf(active);
+    if (index < 0) index = 0;
+    var ratio = (index + 1) / slides.length;
+    progressFill.style.width = (ratio * 100) + "%";
+  }
+
+  function triggerFlash() {
+    var app = document.querySelector(".app");
+    if (!app) return;
+    app.classList.remove("transition-flash");
+    void app.offsetWidth; // reflow
+    app.classList.add("transition-flash");
+  }
+
+  function goToSlide(id) {
+    var current = document.querySelector(".slide.active");
+    var next = document.getElementById(id);
+    if (!next || current === next) return;
+    if (current) current.classList.remove("active");
+    next.classList.add("active");
+    resetTimer();
+    updateProgress();
+    triggerFlash();
+
+    if (id.startsWith("slide-pause")) {
+      startTimerFromActive();
+    }
+  }
+
+  function goToRelativeSlide(step) {
+    var active = document.querySelector(".slide.active");
+    var index = slides.indexOf(active);
+    if (index === -1) return;
+    var nextIndex = index + step;
+    if (nextIndex < 0 || nextIndex >= slides.length) return;
+    goToSlide(slides[nextIndex].id);
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") {
+      goToRelativeSlide(1);
+    }
+    if (e.key === "ArrowLeft") {
+      goToRelativeSlide(-1);
+    }
+    if (e.key === " ") {
+      e.preventDefault();
+      toggleTimer();
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".js-start-timer")) {
+      startTimerFromActive();
+    }
+    if (e.target.closest(".js-reset-timer")) {
+      resetTimer();
+    }
+  });
+
+  function formatTime(seconds) {
+    var m = Math.floor(seconds / 60);
+    var s = seconds % 60;
+    var mm = String(m).padStart(2, "0");
+    var ss = String(s).padStart(2, "0");
+    return mm + ":" + ss;
+  }
+
+  function startTimerFromActive() {
+    var activeSlide = document.querySelector(".slide.active");
+    if (!activeSlide) return;
+    var display = activeSlide.querySelector(".timer-display");
+    if (!display) return;
+
+    var base = parseInt(display.dataset.duration, 10);
+    if (isNaN(base)) return;
+
+    timerDisplayEl = display;
+    startTimer(base);
+  }
+
+  function startTimer(seconds) {
+    clearInterval(timerInterval);
+    timerRemaining = seconds;
+    if (!timerDisplayEl) return;
+    timerDisplayEl.classList.remove("timer-warning");
+    timerDisplayEl.textContent = formatTime(timerRemaining);
+
+    timerInterval = setInterval(function () {
+      timerRemaining--;
+      if (timerRemaining <= 0) {
+        timerRemaining = 0;
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      if (timerRemaining <= 10 && timerRemaining > 0) {
+        timerDisplayEl.classList.add("timer-warning");
+      }
+      if (timerDisplayEl) {
+        timerDisplayEl.textContent = formatTime(timerRemaining);
+      }
+    }, 1000);
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+
+    var activeSlide = document.querySelector(".slide.active");
+    if (!activeSlide) return;
+    var display = activeSlide.querySelector(".timer-display");
+    if (!display) return;
+
+    display.classList.remove("timer-warning");
+    var base = parseInt(display.dataset.duration, 10);
+    if (isNaN(base)) return;
+    timerDisplayEl = display;
+    timerRemaining = base;
+    display.textContent = formatTime(base);
+  }
+
+  function toggleTimer() {
+    var activeSlide = document.querySelector(".slide.active");
+    if (!activeSlide) return;
+    var display = activeSlide.querySelector(".timer-display");
+    if (!display) return;
+
+    if (timerDisplayEl !== display) {
+      timerDisplayEl = display;
+      var baseFirst = parseInt(display.dataset.duration, 10);
+      if (!isNaN(baseFirst)) {
+        startTimer(baseFirst);
+      }
+      return;
+    }
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    } else {
+      if (timerRemaining <= 0) {
+        var base2 = parseInt(display.dataset.duration, 10);
+        if (!isNaN(base2)) {
+          timerRemaining = base2;
+        }
+      }
+      startTimer(timerRemaining);
+    }
+  }
+
+  document.querySelectorAll(".timer-display").forEach(function (el) {
+    var base = parseInt(el.dataset.duration, 10);
+    if (!isNaN(base)) {
+      el.textContent = formatTime(base);
+    }
+  });
+
+  // init
+  updateProgress();
+</script>
+</body>
+</html>
