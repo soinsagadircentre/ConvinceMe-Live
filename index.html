@@ -1224,12 +1224,13 @@
     /* ORGANISATEURS */
 
     .organizers-wrapper {
-      max-width: 900px;
+      max-width: 700px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 12px;
+      padding: 10px;
     }
 
     .slide--remerciements .slide-inner {
@@ -1242,22 +1243,24 @@
     }
 
     .organizers-intro {
-      font-size: 18px;
+      font-size: clamp(13px, 1.5vw, 15px);
       text-align: center;
       max-width: 680px;
+      margin: 0;
     }
 
     .organizers-thanks {
-      font-size: 15px;
+      font-size: clamp(11px, 1.2vw, 13px);
       color: var(--muted);
       text-align: center;
+      margin: 0;
     }
 
     .organizers-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px 28px;
-      margin-top: 10px;
+      gap: 14px 16px;
+      margin-top: 8px;
       width: 100%;
     }
 
@@ -1269,12 +1272,12 @@
 
     .organizer-card {
       border-radius: 999px;
-      padding: 14px 18px;
+      padding: 10px 12px;
       background: rgba(15, 23, 42, 0.96);
       border: 1px solid rgba(148, 163, 184, 0.9);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
     }
 
     .organizers-grid .organizer-card:nth-child(odd) {
@@ -1288,14 +1291,14 @@
     }
 
     .organizer-photo {
-      width: 110px;
-      height: 110px;
+      width: 70px;
+      height: 70px;
       border-radius: 999px;
       border: 1px dashed rgba(148, 163, 184, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 8px;
       color: var(--muted);
       text-align: center;
       overflow: hidden;
@@ -1321,11 +1324,11 @@
       font-family: "Orbitron", system-ui, sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      font-size: 13px;
+      font-size: clamp(10px, 1.2vw, 12px);
     }
 
     .organizer-role {
-      font-size: 13px;
+      font-size: clamp(9px, 1vw, 11px);
       color: var(--muted);
     }
 
@@ -1440,31 +1443,31 @@
     }
 
     .closing-bubbles {
-      max-width: 1020px;
+      max-width: 714px;
       margin: 0 auto;
       display: flex;
       flex-direction: row;
-      gap: 20px;
+      gap: 14px;
       align-items: stretch;
     }
 
     .text-bubble {
       border-radius: 999px;
-      padding: 18px 26px;
+      padding: clamp(10px, 2.1vw, 18px);
       background: rgba(15, 23, 42, 0.96);
       border: 1px solid rgba(148, 163, 184, 0.8);
-      font-size: 19px;
+      font-size: clamp(10px, 1.4vw, 13px);
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       flex: 1;
-      min-height: 210px;
+      min-height: clamp(84px, 14vh, 147px);
       box-shadow: 0 18px 40px rgba(0,0,0,0.85);
     }
 
     .text-bubble small {
-      font-size: 15px;
+      font-size: clamp(8px, 1vw, 10px);
       color: var(--muted);
       display: block;
       margin-top: 4px;
@@ -1473,9 +1476,10 @@
     @media (max-width: 900px) {
       .closing-bubbles {
         flex-direction: column;
+        max-width: 100%;
       }
       .text-bubble {
-        min-height: 0;
+        min-height: auto;
       }
     }
 
@@ -1649,7 +1653,7 @@
             <div>
               <div class="card-title">Visuel</div>
               <div class="image-slot">
-                <img src="images/déroulé.jpeg" alt="Déroulé de la soirée">
+                <img src="images/Déroulé.jpeg" alt="Déroulé de la soirée">
               </div>
             </div>
           </div>
@@ -2294,7 +2298,7 @@
             <div>
               <div class="card-title">Visuel</div>
               <div class="image-slot">
-                <img src="images/qrcode.jpeg" alt="Vote">
+                <img src="images/Qrcode.jpeg" alt="Vote">
               </div>
             </div>
           </div>
@@ -2331,7 +2335,7 @@
             <div>
               <div class="card-title">Visuel</div>
               <div class="image-slot">
-                <img src="images/buffet.jpeg" alt="Buffet">
+                <img src="images/Buffet.jpeg" alt="Buffet">
               </div>
             </div>
           </div>
