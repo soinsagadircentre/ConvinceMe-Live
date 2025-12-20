@@ -1086,8 +1086,13 @@
       flex-wrap: wrap;
     }
 
+    .score-4-row--last {
+      margin-top: 8px;
+    }
+
     .score-4-row .score-card {
       flex: 1 1 220px;
+      max-width: 220px;
     }
 
     /* POLL */
@@ -1321,7 +1326,15 @@
 
     /* ORGANISATEURS */
 
-    .organizers-wrapper {\n      max-width: 700px;\n      margin: 0 auto;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      gap: 8px;\n      padding: 8px;\n    }
+    .organizers-wrapper {
+      max-width: 650px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+    }
 
     .slide--remerciements .slide-inner {
       justify-content: center;
@@ -2273,7 +2286,7 @@
       </div>
     </section>
 
-    <!-- 15 · ENCORE EN COMPÉTITION (4 duos) -->
+    <!-- 15 · ENCORE EN COMPÉTITION (5 duos) -->
     <section class="slide slide--score" id="slide-scoreboard">
       <div class="orb-layer">
         <div class="orb orb--blue orb--2"></div>
@@ -2282,7 +2295,7 @@
       <div class="slide-inner">
         <div class="slide-header">
           <h1 class="slide-title">Encore en compétition</h1>
-          <span class="slide-subtitle">Les 4 derniers duos</span>
+          <span class="slide-subtitle">Les 5 derniers duos</span>
         </div>
         <div class="slide-body">
           <div class="card">
@@ -2307,6 +2320,12 @@
                   </div>
                   <div class="score-card">
                     <span class="score-name">Duo 8</span>
+                    <span class="score-status status-ok">● En compétition</span>
+                  </div>
+                </div>
+                <div class="score-4-row score-4-row--last">
+                  <div class="score-card">
+                    <span class="score-name">Mystery Duo</span>
                     <span class="score-status status-ok">● En compétition</span>
                   </div>
                 </div>
