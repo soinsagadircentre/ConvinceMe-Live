@@ -371,6 +371,14 @@
       }
     }
 
+    /* Contenteditable elements - allow spaces and proper text handling */
+    [contenteditable="true"] {
+      white-space: normal !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      text-transform: none !important;
+    }
+
     /* TIMER 5 MIN : slides dédiés, centrés */
     #slide-defi1-timer .slide-body,
     #slide-defi2-timer .slide-body,
@@ -950,6 +958,10 @@
       border-color: rgba(56, 189, 248, 0.95);
       outline: none;
       box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      text-transform: none;
     }
 
     .duo-pill[contenteditable="true"]:focus {
@@ -1338,6 +1350,23 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: clamp(10px, 1.2vw, 12px);
+    }
+
+    .organizer-name[contenteditable="true"] {
+      background: rgba(56, 189, 248, 0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      outline: none;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+      text-transform: none;
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .organizer-name[contenteditable="true"]:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
     }
 
     .organizer-role {
@@ -2647,6 +2676,7 @@
     });
 
     element.addEventListener("keydown", function(e) {
+      e.stopPropagation(); // Prevent parent handlers from switching slides
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         element.blur();
@@ -2663,6 +2693,7 @@
         sel.removeAllRanges();
         sel.addRange(range);
       }
+      // Arrow keys work normally for text navigation - stopPropagation prevents slide switching
     });
   }
 
@@ -2727,13 +2758,21 @@
   }
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "ArrowRight") {
-      goToRelativeSlide(1);
+    // Check if user is editing a contenteditable element
+    var isEditing = document.activeElement && document.activeElement.hasAttribute("contenteditable");
+    
+    // Don't handle navigation if editing
+    if (!isEditing) {
+      if (e.key === "ArrowRight") {
+        goToRelativeSlide(1);
+      }
+      if (e.key === "ArrowLeft") {
+        goToRelativeSlide(-1);
+      }
     }
-    if (e.key === "ArrowLeft") {
-      goToRelativeSlide(-1);
-    }
-    if (e.key === " ") {
+    
+    // Only prevent space for timer if not editing
+    if (e.key === " " && !isEditing) {
       e.preventDefault();
       toggleTimer();
     }
