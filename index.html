@@ -521,7 +521,6 @@
       color: var(--muted);
       text-align: center;
       padding: 10px;
-      cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
       user-select: none;
@@ -549,6 +548,9 @@
       height: auto;
       max-width: 100%;
       max-height: 100%;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     .app.edit-mode .image-slot img {
@@ -1352,6 +1354,9 @@
       align-items: center;
       gap: 8px;
       padding: 8px;
+      position: relative;
+      padding-top: 20px;
+      padding-bottom: 420px;
     }
 
     .slide--remerciements .slide-inner {
@@ -1375,18 +1380,24 @@
       color: var(--muted);
       text-align: center;
       margin: 0;
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
     }
 
     .organizers-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      margin-top: 6px;
-      width: 100%;
-      max-width: calc(3 * 150px + 2 * 20px);
-      margin-left: auto;
-      margin-right: auto;
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: fit-content;
       overflow: visible;
+      z-index: 5;
     }
 
     @media (max-width: 800px) {
@@ -1464,7 +1475,6 @@
         rgba(248,250,252,0.08),
         transparent 60%);
       flex-shrink: 0;
-      cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
       user-select: none;
@@ -1550,7 +1560,6 @@
       font-size: clamp(10px, 1.2vw, 12px);
       word-wrap: break-word;
       overflow-wrap: break-word;
-      cursor: pointer;
       position: relative;
     }
 
@@ -2915,8 +2924,8 @@
     }
     
     element.addEventListener("dblclick", function(e) {
-      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
       e.stopPropagation();
+      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
       if (!element.hasAttribute("contenteditable")) {
         element.setAttribute("contenteditable", "true");
         element.focus();
@@ -2978,22 +2987,18 @@
     makeEditable(pill);
   });
 
-  // Make any element containing "duo" or "Duo" text editable
+  // Make any element containing "Duo" text editable (simple direct approach)
   document.querySelectorAll("*").forEach(function(el) {
-    var text = el.textContent;
-    // Only target direct text nodes, avoid parent elements
-    if (el.children.length === 0 && (text.toLowerCase().includes("duo") || text.includes("Nom"))) {
-      // Skip if already processed as duo-pill or organizer element
-      if (!el.classList.contains("duo-pill") && !el.classList.contains("organizer-name") && !el.classList.contains("organizer-role")) {
-        var keyName = "text-" + el.tagName + "-" + (el.className || "default");
-        el.dataset.editKey = keyName;
-        // Restore content before making editable
-        var saved = localStorage.getItem("text-" + keyName);
-        if (saved) {
-          el.textContent = saved;
-        }
-        makeEditable(el);
+    var text = el.textContent.trim();
+    // Target any element with Duo in text that isn't already processed
+    if (text.toLowerCase().includes("duo") && !el.dataset.editKey) {
+      var keyName = "duo-content-" + el.className + "-" + Math.random().toString(36).substr(2, 9);
+      el.dataset.editKey = keyName;
+      var saved = localStorage.getItem("text-" + keyName);
+      if (saved) {
+        el.textContent = saved;
       }
+      makeEditable(el);
     }
   });
 
@@ -3021,6 +3026,160 @@
     makeEditable(role);
   });
 
+  // Make score names editable (for scoreboard pages)
+  document.querySelectorAll(".score-name").forEach(function(name, index) {
+    var keyName = "score-name-" + index;
+    name.dataset.editKey = keyName;
+    // Restore content before making editable
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      name.textContent = saved;
+    }
+    makeEditable(name);
+  });
+
+  // Make slide titles editable
+  document.querySelectorAll(".slide-title").forEach(function(title, index) {
+    var keyName = "slide-title-" + index;
+    title.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      title.textContent = saved;
+    }
+    makeEditable(title);
+    setupFontSizeSlider(title);
+  });
+
+  // Make slide subtitles editable
+  document.querySelectorAll(".slide-subtitle").forEach(function(subtitle, index) {
+    var keyName = "slide-subtitle-" + index;
+    subtitle.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      subtitle.textContent = saved;
+    }
+    makeEditable(subtitle);
+    setupFontSizeSlider(subtitle);
+  });
+
+  // Make organizers intro text editable
+  document.querySelectorAll(".organizers-intro").forEach(function(intro, index) {
+    var keyName = "organizers-intro-" + index;
+    intro.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      intro.textContent = saved;
+    }
+    makeEditable(intro);
+    setupFontSizeSlider(intro);
+  });
+
+  // Make organizers thanks text editable
+  document.querySelectorAll(".organizers-thanks").forEach(function(thanks, index) {
+    var keyName = "organizers-thanks-" + index;
+    thanks.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      thanks.textContent = saved;
+    }
+    makeEditable(thanks);
+    setupFontSizeSlider(thanks);
+  });
+
+  // Make card titles editable
+  document.querySelectorAll(".card-title").forEach(function(title, index) {
+    var keyName = "card-title-" + index;
+    title.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      title.textContent = saved;
+    }
+    makeEditable(title);
+    setupFontSizeSlider(title);
+  });
+
+  // Make list items editable
+  document.querySelectorAll("li").forEach(function(li, index) {
+    if (!li.dataset.editKey) {
+      var keyName = "list-item-" + index;
+      li.dataset.editKey = keyName;
+      var saved = localStorage.getItem("text-" + keyName);
+      if (saved) {
+        li.textContent = saved;
+      }
+      makeEditable(li);
+      setupFontSizeSlider(li);
+    }
+  });
+
+  // Make paragraphs editable
+  document.querySelectorAll("p").forEach(function(p, index) {
+    if (!p.dataset.editKey) {
+      var keyName = "paragraph-" + index;
+      p.dataset.editKey = keyName;
+      var saved = localStorage.getItem("text-" + keyName);
+      if (saved) {
+        p.textContent = saved;
+      }
+      makeEditable(p);
+      setupFontSizeSlider(p);
+    }
+  });
+
+  // Make floating pills editable
+  document.querySelectorAll(".floating-pill").forEach(function(pill, index) {
+    if (!pill.dataset.editKey) {
+      var keyName = "floating-pill-" + index;
+      pill.dataset.editKey = keyName;
+      var saved = localStorage.getItem("text-" + keyName);
+      if (saved) {
+        pill.textContent = saved;
+      }
+      makeEditable(pill);
+      setupFontSizeSlider(pill);
+    }
+  });
+
+  // Make ALL remaining text content editable
+  function makeAllTextEditable() {
+    var counter = 0;
+    document.querySelectorAll("*").forEach(function(el) {
+      // Skip if already has editKey
+      if (el.dataset.editKey) return;
+      // Skip if has child elements (except br)
+      var hasChildren = Array.from(el.children).some(function(child) {
+        return child.tagName !== "BR";
+      });
+      if (hasChildren) return;
+      
+      // Get text content
+      var text = el.textContent.trim();
+      if (!text || text.length === 0) return;
+      
+      // Skip interactive elements and special cases
+      if (el.classList.contains("timer-display") || 
+          el.classList.contains("topbar-progress-fill") ||
+          el.classList.contains("resize-handle") ||
+          el.classList.contains("topbar-tag") ||
+          el.classList.contains("live-dot") ||
+          el.tagName === "BUTTON" ||
+          el.tagName === "INPUT" ||
+          el.tagName === "STYLE" ||
+          el.tagName === "SCRIPT") return;
+      
+      var keyName = "text-editable-" + (counter++);
+      el.dataset.editKey = keyName;
+      var saved = localStorage.getItem("text-" + keyName);
+      if (saved) {
+        el.textContent = saved;
+      }
+      makeEditable(el);
+      setupFontSizeSlider(el);
+    });
+  }
+  
+  makeAllTextEditable();
+
   // Handle image uploads and resizing
   var imageStorageCounter = 0;
   
@@ -3038,7 +3197,20 @@
     document.body.appendChild(input);
 
     container.addEventListener("dblclick", function(e) {
-      if (e.target.tagName === "IMG" || !container.querySelector("img")) {
+      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
+      // Skip if clicking on special elements like pills, buttons, spans
+      if (e.target.classList.contains("floating-pill") ||
+          e.target.classList.contains("duo-pill") ||
+          e.target.classList.contains("topbar-tag") ||
+          e.target.tagName === "BUTTON" ||
+          e.target.tagName === "SPAN" ||
+          e.target.getAttribute("data-edit-key")) {
+        return;
+      }
+      // Only trigger file upload if clicking directly on container with no image, or on an existing image
+      if (e.target === container && !container.querySelector("img")) {
+        input.click();
+      } else if (e.target.tagName === "IMG") {
         input.click();
       }
     });
@@ -3175,8 +3347,34 @@
         localStorage.setItem("image-" + imageResizeState.imageId + "-width", newWidth);
         localStorage.setItem("image-" + imageResizeState.imageId + "-height", newHeight);
       }
+      // Update resize handle positions to stick with image corners
+      updateImageResizeHandles(img, imageResizeState.container);
     }
   });
+
+  function updateImageResizeHandles(img, container) {
+    if (!img) return;
+    var rect = img.getBoundingClientRect();
+    var containerRect = container.getBoundingClientRect();
+    
+    var handles = container.querySelectorAll(".resize-handle");
+    handles.forEach(function(handle) {
+      var corner = handle.classList[1];
+      if (corner === "tl") {
+        handle.style.top = (rect.top - containerRect.top) + "px";
+        handle.style.left = (rect.left - containerRect.left) + "px";
+      } else if (corner === "tr") {
+        handle.style.top = (rect.top - containerRect.top) + "px";
+        handle.style.right = (containerRect.right - rect.right) + "px";
+      } else if (corner === "bl") {
+        handle.style.bottom = (containerRect.bottom - rect.bottom) + "px";
+        handle.style.left = (rect.left - containerRect.left) + "px";
+      } else if (corner === "br") {
+        handle.style.bottom = (containerRect.bottom - rect.bottom) + "px";
+        handle.style.right = (containerRect.right - rect.right) + "px";
+      }
+    });
+  }
 
   document.addEventListener("mouseup", function() {
     if (imageResizeState.isResizing && imageResizeState.container) {
@@ -3292,12 +3490,12 @@
       if (newWidth > 150) {
         // Save and apply to this card
         card.style.width = newWidth + "px";
-        localStorage.setItem("organizer-card-" + bubbleResizeState.cardIndex + "-width", newWidth);
         
-        // Apply same width to all other cards in the grid
+        // Apply same width to all other cards in the grid and save for all
         var allCards = document.querySelectorAll(".organizer-card");
-        allCards.forEach(function(c) {
+        allCards.forEach(function(c, index) {
           c.style.width = newWidth + "px";
+          localStorage.setItem("organizer-card-" + index + "-width", newWidth);
         });
       }
     }
@@ -3309,11 +3507,6 @@
       bubbleResizeState.card = null;
     }
   }, false);
-  
-  // Apply resize handlers to organizer cards
-  document.querySelectorAll(".organizer-card").forEach(function(card) {
-    setupOrganizerCardResize(card);
-  });
   
   // Restore all bubble sizes from localStorage on page load
   setTimeout(function() {
@@ -3335,9 +3528,13 @@
     if (maxSavedWidth > 0) {
       allCards.forEach(function(card, index) {
         card.style.width = maxSavedWidth + "px";
-        localStorage.setItem("organizer-card-" + index + "-width", maxSavedWidth);
       });
     }
+    
+    // Setup resize handlers after loading saved widths
+    allCards.forEach(function(card) {
+      setupOrganizerCardResize(card);
+    });
   }, 100);
   
   // Setup font size sliders for organizer text
