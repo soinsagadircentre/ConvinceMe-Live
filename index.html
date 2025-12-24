@@ -1361,7 +1361,7 @@
 
     .organizers-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px 14px;
       margin-top: 6px;
       width: 100%;
@@ -1369,7 +1369,7 @@
 
     @media (max-width: 800px) {
       .organizers-grid {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -1391,7 +1391,7 @@
 
     .organizers-grid .organizer-card:nth-child(even) {
       justify-content: flex-start;
-      flex-direction: row-reverse;
+      flex-direction: row;
     }
 
     .organizer-photo {
@@ -1940,7 +1940,7 @@
             <div>
               <div class="card-title">Chrono défi 1</div>
               <div class="timer-block">
-                <div class="timer-big timer-display" data-duration="300">05:00</div>
+                <div class="timer-big timer-display" data-duration="120">02:00</div>
               </div>
               <div class="btn-row">
                 <button class="btn btn-ghost js-start-timer">Start</button>
@@ -2089,7 +2089,7 @@
             <div>
               <div class="card-title">Chrono défi 2</div>
               <div class="timer-block">
-                <div class="timer-big timer-display" data-duration="300">05:00</div>
+                <div class="timer-big timer-display" data-duration="120">02:00</div>
               </div>
               <div class="btn-row">
                 <button class="btn btn-ghost js-start-timer">Start</button>
@@ -2237,7 +2237,7 @@
             <div>
               <div class="card-title">Chrono défi 3</div>
               <div class="timer-block">
-                <div class="timer-big timer-display" data-duration="300">05:00</div>
+                <div class="timer-big timer-display" data-duration="240">04:00</div>
               </div>
               <div class="btn-row">
                 <button class="btn btn-ghost js-start-timer">Start</button>
@@ -2399,7 +2399,7 @@
             <div>
               <div class="card-title">Chrono défi 4</div>
               <div class="timer-block">
-                <div class="timer-big timer-display" data-duration="300">05:00</div>
+                <div class="timer-big timer-display" data-duration="240">04:00</div>
               </div>
               <div class="btn-row">
                 <button class="btn btn-ghost js-start-timer">Start</button>
@@ -3006,9 +3006,7 @@
     updateProgress();
     triggerFlash();
 
-    if (id.startsWith("slide-pause")) {
-      startTimerFromActive();
-    }
+    // Timers no longer auto-start; user must click Start button
   }
 
   function goToRelativeSlide(step) {
