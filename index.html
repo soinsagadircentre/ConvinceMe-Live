@@ -527,6 +527,10 @@
       user-select: none;
     }
 
+    .image-slot {
+      pointer-events: auto;
+    }
+
     .image-slot:hover {
       background: rgba(56, 189, 248, 0.05);
     }
@@ -536,13 +540,23 @@
     }
 
     .image-slot img {
-      width: 100%;
-      height: 100%;
       object-fit: cover;
       border-radius: 20px;
       cursor: grab;
       touch-action: none;
       position: relative;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .app.edit-mode .image-slot img {
+      pointer-events: none;
+    }
+
+    .app.edit-mode .image-slot .resize-handle {
+      pointer-events: auto;
     }
 
     .image-slot img:active {
@@ -570,34 +584,38 @@
       opacity: 0;
       transition: opacity 0.2s ease;
       z-index: 10;
+      pointer-events: none;
     }
 
     .image-slot .resize-handle.tl {
-      top: -6px;
-      left: -6px;
-      cursor: nwse-resize;
+      top: 5px;
+      left: 5px;
     }
 
     .image-slot .resize-handle.tr {
-      top: -6px;
-      right: -6px;
-      cursor: nesw-resize;
+      top: 5px;
+      right: 5px;
     }
 
     .image-slot .resize-handle.bl {
-      bottom: -6px;
-      left: -6px;
-      cursor: nesw-resize;
+      bottom: 5px;
+      left: 5px;
     }
 
     .image-slot .resize-handle.br {
-      bottom: -6px;
-      right: -6px;
+      bottom: 5px;
+      right: 5px;
+    }
+
+    .app.edit-mode .image-slot .resize-handle {
+      opacity: 1;
+      pointer-events: auto;
       cursor: nwse-resize;
     }
 
-    .image-slot:hover .resize-handle {
-      opacity: 1;
+    .app.edit-mode .image-slot .resize-handle.tr,
+    .app.edit-mode .image-slot .resize-handle.bl {
+      cursor: nesw-resize;
     }
 
     /* SLIDE ACCUEIL – taille XXL */
@@ -1361,15 +1379,19 @@
 
     .organizers-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px 14px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
       margin-top: 6px;
       width: 100%;
+      max-width: calc(3 * 150px + 2 * 20px);
+      margin-left: auto;
+      margin-right: auto;
+      overflow: visible;
     }
 
     @media (max-width: 800px) {
       .organizers-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, auto));
       }
     }
 
@@ -1382,6 +1404,38 @@
       align-items: center;
       gap: 10px;
       min-height: 130px;
+      transition: width 0.3s ease;
+      position: relative;
+      user-select: none;
+    }
+
+    .organizer-card .resize-handle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: rgba(56, 189, 248, 0.8);
+      border-radius: 50%;
+      border: 2px solid white;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+      cursor: ew-resize;
+    }
+
+    .organizer-card .resize-handle.left {
+      left: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .organizer-card .resize-handle.right {
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .app.edit-mode .organizer-card:hover .resize-handle {
+      opacity: 1;
     }
 
     .organizers-grid .organizer-card:nth-child(odd) {
@@ -1446,40 +1500,47 @@
       opacity: 0;
       transition: opacity 0.2s ease;
       z-index: 10;
+      pointer-events: none;
     }
 
     .organizer-photo .resize-handle.tl {
-      top: -6px;
-      left: -6px;
-      cursor: nwse-resize;
+      top: 5px;
+      left: 5px;
     }
 
     .organizer-photo .resize-handle.tr {
-      top: -6px;
-      right: -6px;
-      cursor: nesw-resize;
+      top: 5px;
+      right: 5px;
     }
 
     .organizer-photo .resize-handle.bl {
-      bottom: -6px;
-      left: -6px;
-      cursor: nesw-resize;
+      bottom: 5px;
+      left: 5px;
     }
 
     .organizer-photo .resize-handle.br {
-      bottom: -6px;
-      right: -6px;
+      bottom: 5px;
+      right: 5px;
+    }
+
+    .app.edit-mode .organizer-photo:hover .resize-handle {
+      opacity: 1;
+      pointer-events: auto;
       cursor: nwse-resize;
     }
 
-    .organizer-photo:hover .resize-handle {
-      opacity: 1;
+    .app.edit-mode .organizer-photo:hover .resize-handle.tr,
+    .app.edit-mode .organizer-photo:hover .resize-handle.bl {
+      cursor: nesw-resize;
     }
 
     .organizer-info {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      flex: 1;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .organizer-name {
@@ -1487,6 +1548,52 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: clamp(10px, 1.2vw, 12px);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .font-size-slider {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(56, 189, 248, 0.8);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 10px;
+      display: none;
+      z-index: 100;
+      white-space: nowrap;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    }
+
+    .font-size-slider.visible {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app:not(.edit-mode) .font-size-slider {
+      display: none !important;
+    }
+
+    .font-size-slider input[type="range"] {
+      width: 120px;
+    }
+
+    .font-size-slider span {
+      color: var(--accent-blue);
+      font-size: 11px;
+      font-family: "Orbitron", system-ui, sans-serif;
+      min-width: 35px;
+    }
+
+    .app:not(.edit-mode) .organizer-name,
+    .app:not(.edit-mode) .organizer-role {
+      pointer-events: none;
     }
 
     .organizer-name[contenteditable="true"] {
@@ -1509,6 +1616,8 @@
     .organizer-role {
       font-size: clamp(9px, 1vw, 11px);
       color: var(--muted);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     /* SLIDE FINAL */
@@ -2806,6 +2915,7 @@
     }
     
     element.addEventListener("dblclick", function(e) {
+      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
       e.stopPropagation();
       if (!element.hasAttribute("contenteditable")) {
         element.setAttribute("contenteditable", "true");
@@ -2822,6 +2932,13 @@
     element.addEventListener("blur", function() {
       element.removeAttribute("contenteditable");
       // Save to localStorage
+      if (element.dataset.editKey) {
+        localStorage.setItem("text-" + element.dataset.editKey, element.textContent);
+      }
+    });
+    
+    // Also save on input changes
+    element.addEventListener("input", function() {
       if (element.dataset.editKey) {
         localStorage.setItem("text-" + element.dataset.editKey, element.textContent);
       }
@@ -2847,22 +2964,17 @@
       }
       // Arrow keys work normally for text navigation - stopPropagation prevents slide switching
     });
-    
-    // Load from localStorage on initialization
-    if (element.dataset.editKey) {
-      var savedContent = localStorage.getItem("text-" + element.dataset.editKey);
-      if (savedContent) {
-        element.textContent = savedContent;
-      }
-    }
   }
 
   // Make duo pills editable
   document.querySelectorAll(".duo-pill").forEach(function(pill, index) {
-    if (!pill.id) {
-      pill.id = "duo-pill-" + index;
+    var keyName = "duo-pill-" + index;
+    pill.dataset.editKey = keyName;
+    // Restore content before making editable
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      pill.textContent = saved;
     }
-    pill.dataset.editKey = pill.id;
     makeEditable(pill);
   });
 
@@ -2871,29 +2983,41 @@
     var text = el.textContent;
     // Only target direct text nodes, avoid parent elements
     if (el.children.length === 0 && (text.toLowerCase().includes("duo") || text.includes("Nom"))) {
-      if (!el.id) {
-        el.id = "text-element-" + Math.random().toString(36).substr(2, 9);
+      // Skip if already processed as duo-pill or organizer element
+      if (!el.classList.contains("duo-pill") && !el.classList.contains("organizer-name") && !el.classList.contains("organizer-role")) {
+        var keyName = "text-" + el.tagName + "-" + (el.className || "default");
+        el.dataset.editKey = keyName;
+        // Restore content before making editable
+        var saved = localStorage.getItem("text-" + keyName);
+        if (saved) {
+          el.textContent = saved;
+        }
+        makeEditable(el);
       }
-      el.dataset.editKey = el.id;
-      makeEditable(el);
     }
   });
 
   // Make organizer names editable
   document.querySelectorAll(".organizer-name").forEach(function(name, index) {
-    if (!name.id) {
-      name.id = "organizer-name-" + index;
+    var keyName = "organizer-name-" + index;
+    name.dataset.editKey = keyName;
+    // Restore content before making editable
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      name.textContent = saved;
     }
-    name.dataset.editKey = name.id;
     makeEditable(name);
   });
 
   // Make organizer roles editable
   document.querySelectorAll(".organizer-role").forEach(function(role, index) {
-    if (!role.id) {
-      role.id = "organizer-role-" + index;
+    var keyName = "organizer-role-" + index;
+    role.dataset.editKey = keyName;
+    // Restore content before making editable
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      role.textContent = saved;
     }
-    role.dataset.editKey = role.id;
     makeEditable(role);
   });
 
@@ -2935,12 +3059,17 @@
           img.src = event.target.result;
           // Save to localStorage
           localStorage.setItem("image-" + imageId, event.target.result);
-          // Save dimensions if they exist
-          if (img.offsetWidth && img.offsetHeight) {
-            localStorage.setItem("image-" + imageId + "-width", img.offsetWidth);
-            localStorage.setItem("image-" + imageId + "-height", img.offsetHeight);
-          }
-          setupImageResize(img, container);
+          
+          // Wait for image to load, then save dimensions
+          img.onload = function() {
+            var width = img.naturalWidth || 200;
+            var height = img.naturalHeight || 200;
+            img.style.width = width + "px";
+            img.style.height = height + "px";
+            localStorage.setItem("image-" + imageId + "-width", width);
+            localStorage.setItem("image-" + imageId + "-height", height);
+            setupImageResize(img, container);
+          };
         };
         reader.readAsDataURL(e.target.files[0]);
       }
@@ -2977,76 +3106,285 @@
     });
   }
 
-  function setupImageResize(img, container) {
-    var handles = container.querySelectorAll(".resize-handle");
-    var isResizing = false;
-    var startX, startY, startWidth, startHeight, resizeCorner;
+  var imageResizeState = {
+    isResizing: false,
+    startX: 0,
+    startY: 0,
+    startWidth: 0,
+    startHeight: 0,
+    corner: null,
+    container: null,
+    imageId: null
+  };
 
+  function setupImageResize(img, container) {
+    if (!img) return;
+    
+    var handles = container.querySelectorAll(".resize-handle");
     handles.forEach(function(handle) {
       handle.addEventListener("mousedown", function(e) {
+        if (!document.querySelector(".app").classList.contains("edit-mode")) return;
+        
         e.preventDefault();
         e.stopPropagation();
-        isResizing = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        startWidth = img.offsetWidth;
-        startHeight = img.offsetHeight;
-        resizeCorner = handle.className.split(" ")[1]; // tl, tr, bl, br
+        
+        imageResizeState.isResizing = true;
+        imageResizeState.startX = e.clientX;
+        imageResizeState.startY = e.clientY;
+        imageResizeState.startWidth = img.offsetWidth;
+        imageResizeState.startHeight = img.offsetHeight;
+        imageResizeState.corner = handle.classList[1];
+        imageResizeState.container = container;
+        imageResizeState.imageId = container.dataset.imageId;
         img.style.cursor = "grabbing";
       });
     });
-
-    document.addEventListener("mousemove", function(e) {
-      if (isResizing) {
-        var deltaX = e.clientX - startX;
-        var deltaY = e.clientY - startY;
-        var newWidth = startWidth;
-        var newHeight = startHeight;
-
-        if (resizeCorner === "br") {
-          newWidth = startWidth + deltaX;
-          newHeight = startHeight + deltaY;
-        } else if (resizeCorner === "bl") {
-          newWidth = startWidth - deltaX;
-          newHeight = startHeight + deltaY;
-        } else if (resizeCorner === "tr") {
-          newWidth = startWidth + deltaX;
-          newHeight = startHeight - deltaY;
-        } else if (resizeCorner === "tl") {
-          newWidth = startWidth - deltaX;
-          newHeight = startHeight - deltaY;
-        }
-
-        // Maintain aspect ratio and minimum size
-        if (newWidth > 30 && newHeight > 30) {
-          img.style.width = newWidth + "px";
-          img.style.height = newHeight + "px";
-          // Save dimensions to localStorage
-          var imageId = img.closest(".image-slot, .organizer-photo").dataset.imageId;
-          if (imageId) {
-            localStorage.setItem("image-" + imageId + "-width", newWidth);
-            localStorage.setItem("image-" + imageId + "-height", newHeight);
-          }
-        }
-      }
-    });
-
-    document.addEventListener("mouseup", function() {
-      if (isResizing) {
-        isResizing = false;
-        img.style.cursor = "grab";
-      }
-    });
   }
+
+  document.addEventListener("mousemove", function(e) {
+    if (!imageResizeState.isResizing || !imageResizeState.container) return;
+    
+    var img = imageResizeState.container.querySelector("img");
+    if (!img) return;
+    
+    var deltaX = e.clientX - imageResizeState.startX;
+    var deltaY = e.clientY - imageResizeState.startY;
+    var corner = imageResizeState.corner;
+    
+    var newWidth = imageResizeState.startWidth;
+    var newHeight = imageResizeState.startHeight;
+    
+    if (corner === "br") {
+      newWidth = imageResizeState.startWidth + deltaX;
+      newHeight = imageResizeState.startHeight + deltaY;
+    } else if (corner === "bl") {
+      newWidth = imageResizeState.startWidth - deltaX;
+      newHeight = imageResizeState.startHeight + deltaY;
+    } else if (corner === "tr") {
+      newWidth = imageResizeState.startWidth + deltaX;
+      newHeight = imageResizeState.startHeight - deltaY;
+    } else if (corner === "tl") {
+      newWidth = imageResizeState.startWidth - deltaX;
+      newHeight = imageResizeState.startHeight - deltaY;
+    }
+    
+    if (newWidth > 30 && newHeight > 30) {
+      img.style.width = newWidth + "px";
+      img.style.height = newHeight + "px";
+      if (imageResizeState.imageId) {
+        localStorage.setItem("image-" + imageResizeState.imageId + "-width", newWidth);
+        localStorage.setItem("image-" + imageResizeState.imageId + "-height", newHeight);
+      }
+    }
+  });
+
+  document.addEventListener("mouseup", function() {
+    if (imageResizeState.isResizing && imageResizeState.container) {
+      var img = imageResizeState.container.querySelector("img");
+      if (img) img.style.cursor = "grab";
+    }
+    imageResizeState.isResizing = false;
+    imageResizeState.container = null;
+  });
 
   // Apply image handling to all image slots
   document.querySelectorAll(".image-slot").forEach(function(slot) {
     setupImageElement(slot);
+    // Ensure resize handles exist even without image
+    if (!slot.querySelector(".resize-handle")) {
+      createResizeHandles(slot);
+    }
+    // Setup resize for existing or newly created image
+    var img = slot.querySelector("img");
+    if (img) {
+      setupImageResize(img, slot);
+    }
   });
 
   // Apply image handling to organizer photos
   document.querySelectorAll(".organizer-photo").forEach(function(photo) {
     setupImageElement(photo);
+    // Ensure resize handles exist even without image
+    if (!photo.querySelector(".resize-handle")) {
+      createResizeHandles(photo);
+    }
+    // Setup resize for existing or newly created image
+    var img = photo.querySelector("img");
+    if (img) {
+      setupImageResize(img, photo);
+    }
+  });
+  
+  // Function to recalculate and sync organizer card widths
+  function syncOrganizerCardWidths() {
+    var cards = document.querySelectorAll(".organizer-card");
+    if (cards.length === 0) return;
+    
+    // Reset widths to auto to measure content
+    cards.forEach(function(card) {
+      card.style.width = "auto";
+    });
+    
+    // Find the widest card
+    var maxWidth = 0;
+    cards.forEach(function(card) {
+      var width = card.offsetWidth;
+      if (width > maxWidth) {
+        maxWidth = width;
+      }
+    });
+    
+    // Apply max width to all cards
+    cards.forEach(function(card) {
+      card.style.width = maxWidth + "px";
+    });
+  }
+  
+  // Setup resizable organizer cards
+  var bubbleResizeState = {
+    isResizing: false,
+    card: null,
+    startX: 0,
+    startWidth: 0,
+    cardIndex: 0
+  };
+  
+  function setupOrganizerCardResize(card) {
+    // Create resize handles
+    var leftHandle = document.createElement("div");
+    leftHandle.className = "resize-handle left";
+    card.appendChild(leftHandle);
+    
+    var rightHandle = document.createElement("div");
+    rightHandle.className = "resize-handle right";
+    card.appendChild(rightHandle);
+    
+    var cardIndex = Array.from(card.parentNode.children).indexOf(card);
+    
+    function startResize(e) {
+      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      bubbleResizeState.isResizing = true;
+      bubbleResizeState.card = card;
+      bubbleResizeState.cardIndex = cardIndex;
+      bubbleResizeState.startX = e.clientX;
+      bubbleResizeState.startWidth = card.offsetWidth;
+    }
+    
+    leftHandle.addEventListener("mousedown", startResize);
+    rightHandle.addEventListener("mousedown", startResize);
+    
+    // Load saved width
+    var savedWidth = localStorage.getItem("organizer-card-" + cardIndex + "-width");
+    if (savedWidth) {
+      card.style.width = savedWidth + "px";
+    }
+  }
+  
+  // Global mousemove and mouseup for bubble resizing
+  document.addEventListener("mousemove", function(e) {
+    if (bubbleResizeState.isResizing && bubbleResizeState.card) {
+      var card = bubbleResizeState.card;
+      var deltaX = e.clientX - bubbleResizeState.startX;
+      var newWidth = bubbleResizeState.startWidth + (deltaX * 2);
+      
+      if (newWidth > 150) {
+        // Save and apply to this card
+        card.style.width = newWidth + "px";
+        localStorage.setItem("organizer-card-" + bubbleResizeState.cardIndex + "-width", newWidth);
+        
+        // Apply same width to all other cards in the grid
+        var allCards = document.querySelectorAll(".organizer-card");
+        allCards.forEach(function(c) {
+          c.style.width = newWidth + "px";
+        });
+      }
+    }
+  }, false);
+  
+  document.addEventListener("mouseup", function(e) {
+    if (bubbleResizeState.isResizing) {
+      bubbleResizeState.isResizing = false;
+      bubbleResizeState.card = null;
+    }
+  }, false);
+  
+  // Apply resize handlers to organizer cards
+  document.querySelectorAll(".organizer-card").forEach(function(card) {
+    setupOrganizerCardResize(card);
+  });
+  
+  // Restore all bubble sizes from localStorage on page load
+  setTimeout(function() {
+    var allCards = document.querySelectorAll(".organizer-card");
+    var maxSavedWidth = 0;
+    
+    // Find the maximum saved width
+    allCards.forEach(function(card, index) {
+      var savedWidth = localStorage.getItem("organizer-card-" + index + "-width");
+      if (savedWidth) {
+        var width = parseInt(savedWidth, 10);
+        if (width > maxSavedWidth) {
+          maxSavedWidth = width;
+        }
+      }
+    });
+    
+    // Apply the maximum saved width to all cards if any was found
+    if (maxSavedWidth > 0) {
+      allCards.forEach(function(card, index) {
+        card.style.width = maxSavedWidth + "px";
+        localStorage.setItem("organizer-card-" + index + "-width", maxSavedWidth);
+      });
+    }
+  }, 100);
+  
+  // Setup font size sliders for organizer text
+  function setupFontSizeSlider(textEl) {
+    var slider = document.createElement("div");
+    slider.className = "font-size-slider";
+    slider.innerHTML = '<input type="range" min="8" max="20" value="12" step="0.5"><span>12px</span>';
+    textEl.parentNode.insertBefore(slider, textEl);
+    
+    var input = slider.querySelector("input");
+    var span = slider.querySelector("span");
+    
+    // Load saved font size
+    var textKey = textEl.dataset.editKey;
+    var savedSize = localStorage.getItem("font-size-" + textKey);
+    if (savedSize) {
+      input.value = savedSize;
+      textEl.style.fontSize = savedSize + "px";
+      span.textContent = savedSize + "px";
+    }
+    
+    textEl.addEventListener("click", function(e) {
+      e.stopPropagation();
+      slider.classList.toggle("visible");
+    });
+    
+    input.addEventListener("input", function(e) {
+      var size = input.value;
+      textEl.style.fontSize = size + "px";
+      span.textContent = size + "px";
+      // Save font size
+      if (textKey) {
+        localStorage.setItem("font-size-" + textKey, size);
+      }
+    });
+    
+    // Close slider when clicking outside
+    document.addEventListener("click", function(e) {
+      if (!slider.contains(e.target) && e.target !== textEl) {
+        slider.classList.remove("visible");
+      }
+    });
+  }
+  
+  // Apply font size sliders to organizer names and roles
+  document.querySelectorAll(".organizer-name, .organizer-role").forEach(function(el) {
+    setupFontSizeSlider(el);
   });
 
   function updateProgress() {
@@ -3089,6 +3427,13 @@
   }
 
   document.addEventListener("keydown", function (e) {
+    // Toggle edit mode with 'o' key
+    if (e.key === "o" || e.key === "O") {
+      e.preventDefault();
+      var app = document.querySelector(".app");
+      app.classList.toggle("edit-mode");
+    }
+    
     // Check if user is editing a contenteditable element
     var isEditing = document.activeElement && document.activeElement.hasAttribute("contenteditable");
     
@@ -3217,6 +3562,9 @@
 
   // init
   updateProgress();
+  
+  // Start in presentation mode (tools hidden)
+  document.querySelector(".app").classList.remove("edit-mode");
 </script>
 </body>
 </html>
