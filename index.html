@@ -2859,8 +2859,21 @@
     makeEditable(name);
   });
 
+  // Make organizer roles editable
+  document.querySelectorAll(".organizer-role").forEach(function(role) {
+    makeEditable(role);
+  });
+
   // Handle image uploads and resizing
+  var imageStorageCounter = 0;
+  
   function setupImageElement(container) {
+    // Assign unique ID if not present
+    if (!container.dataset.imageId) {
+      container.dataset.imageId = "img-" + (imageStorageCounter++);
+    }
+    var imageId = container.dataset.imageId;
+    
     var input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
@@ -2887,18 +2900,36 @@
             createResizeHandles(container);
           }
           img.src = event.target.result;
+          // Save to localStorage
+          localStorage.setItem("image-" + imageId, event.target.result);
+          // Save dimensions if they exist
+          if (img.offsetWidth && img.offsetHeight) {
+            localStorage.setItem("image-" + imageId + "-width", img.offsetWidth);
+            localStorage.setItem("image-" + imageId + "-height", img.offsetHeight);
+          }
           setupImageResize(img, container);
         };
         reader.readAsDataURL(e.target.files[0]);
       }
     });
 
-    // Setup resizing for existing images
-    var img = container.querySelector("img");
-    if (img) {
-      // Add resize handles if they don't exist
-      if (!container.querySelector(".resize-handle")) {
+    // Load image from localStorage if it exists
+    var savedImage = localStorage.getItem("image-" + imageId);
+    if (savedImage) {
+      var img = container.querySelector("img");
+      if (!img) {
+        img = document.createElement("img");
+        container.textContent = "";
+        container.appendChild(img);
         createResizeHandles(container);
+      }
+      img.src = savedImage;
+      // Restore dimensions
+      var savedWidth = localStorage.getItem("image-" + imageId + "-width");
+      var savedHeight = localStorage.getItem("image-" + imageId + "-height");
+      if (savedWidth && savedHeight) {
+        img.style.width = savedWidth + "px";
+        img.style.height = savedHeight + "px";
       }
       setupImageResize(img, container);
     }
@@ -2957,6 +2988,12 @@
         if (newWidth > 30 && newHeight > 30) {
           img.style.width = newWidth + "px";
           img.style.height = newHeight + "px";
+          // Save dimensions to localStorage
+          var imageId = img.closest(".image-slot, .organizer-photo").dataset.imageId;
+          if (imageId) {
+            localStorage.setItem("image-" + imageId + "-width", newWidth);
+            localStorage.setItem("image-" + imageId + "-height", newHeight);
+          }
         }
       }
     });
