@@ -2800,6 +2800,11 @@
 
   // Function to enable editing for an element
   function makeEditable(element) {
+    // Assign unique key if not present
+    if (!element.dataset.editKey) {
+      element.dataset.editKey = element.id || "edit-" + Math.random().toString(36).substr(2, 9);
+    }
+    
     element.addEventListener("dblclick", function(e) {
       e.stopPropagation();
       if (!element.hasAttribute("contenteditable")) {
@@ -2816,6 +2821,10 @@
 
     element.addEventListener("blur", function() {
       element.removeAttribute("contenteditable");
+      // Save to localStorage
+      if (element.dataset.editKey) {
+        localStorage.setItem("text-" + element.dataset.editKey, element.textContent);
+      }
     });
 
     element.addEventListener("keydown", function(e) {
@@ -2838,10 +2847,22 @@
       }
       // Arrow keys work normally for text navigation - stopPropagation prevents slide switching
     });
+    
+    // Load from localStorage on initialization
+    if (element.dataset.editKey) {
+      var savedContent = localStorage.getItem("text-" + element.dataset.editKey);
+      if (savedContent) {
+        element.textContent = savedContent;
+      }
+    }
   }
 
   // Make duo pills editable
-  document.querySelectorAll(".duo-pill").forEach(function(pill) {
+  document.querySelectorAll(".duo-pill").forEach(function(pill, index) {
+    if (!pill.id) {
+      pill.id = "duo-pill-" + index;
+    }
+    pill.dataset.editKey = pill.id;
     makeEditable(pill);
   });
 
@@ -2850,17 +2871,29 @@
     var text = el.textContent;
     // Only target direct text nodes, avoid parent elements
     if (el.children.length === 0 && (text.toLowerCase().includes("duo") || text.includes("Nom"))) {
+      if (!el.id) {
+        el.id = "text-element-" + Math.random().toString(36).substr(2, 9);
+      }
+      el.dataset.editKey = el.id;
       makeEditable(el);
     }
   });
 
   // Make organizer names editable
-  document.querySelectorAll(".organizer-name").forEach(function(name) {
+  document.querySelectorAll(".organizer-name").forEach(function(name, index) {
+    if (!name.id) {
+      name.id = "organizer-name-" + index;
+    }
+    name.dataset.editKey = name.id;
     makeEditable(name);
   });
 
   // Make organizer roles editable
-  document.querySelectorAll(".organizer-role").forEach(function(role) {
+  document.querySelectorAll(".organizer-role").forEach(function(role, index) {
+    if (!role.id) {
+      role.id = "organizer-role-" + index;
+    }
+    role.dataset.editKey = role.id;
     makeEditable(role);
   });
 
