@@ -3630,6 +3630,7 @@
   // State save/restore with keyboard shortcuts
   var keysPressed = {};
   var savedState = null;
+  var initialState = null;
 
   // Load saved state from localStorage on page load
   function loadSavedStateFromStorage() {
@@ -3669,6 +3670,13 @@
       restoreState();
       keysPressed["6"] = false;
       keysPressed["7"] = false;
+    }
+
+    // Check if '0' and '1' are both held to reset to initial state
+    if (keysPressed["0"] && keysPressed["1"]) {
+      resetToInitial();
+      keysPressed["0"] = false;
+      keysPressed["1"] = false;
     }
   });
 
@@ -3713,13 +3721,70 @@
     location.reload();
   }
 
+  function resetToInitial() {
+    if (!initialState) {
+      showNotification("No initial state available", "error");
+      console.log("No initial state to reset to");
+      return;
+    }
+    
+    // Clear all current localStorage entries except the saved states
+    for (var i = localStorage.length - 1; i >= 0; i--) {
+      var key = localStorage.key(i);
+      if (key !== "__backup-state__" && key !== "__initial-state__") {
+        localStorage.removeItem(key);
+      }
+    }
+    
+    // Restore all initial localStorage entries
+    for (var key in initialState) {
+      if (initialState.hasOwnProperty(key)) {
+        localStorage.setItem(key, initialState[key]);
+      }
+    }
+    
+    showNotification("Website reset to initial state", "success");
+    console.log("Website reset to initial state!");
+    // Set flag to show message after reload
+    localStorage.setItem("__show-reset-message__", "true");
+    // Refresh the page to fully apply the state
+    location.reload();
+  }
+
   // Load any previously saved state when the page loads
   loadSavedStateFromStorage();
+
+  // Save the initial state on first page load (if not already saved)
+  if (!localStorage.getItem("__initial-state__")) {
+    initialState = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key !== "__backup-state__") {
+        initialState[key] = localStorage.getItem(key);
+      }
+    }
+    localStorage.setItem("__initial-state__", JSON.stringify(initialState));
+    console.log("Initial state saved!");
+  } else {
+    // Load existing initial state from storage
+    try {
+      initialState = JSON.parse(localStorage.getItem("__initial-state__"));
+      console.log("Loaded initial state from storage");
+    } catch (e) {
+      console.log("Failed to parse initial state");
+    }
+  }
 
   // Check if we should show the restore message (after page reload)
   if (localStorage.getItem("__show-restore-message__")) {
     showNotification("Save restored", "success");
     localStorage.removeItem("__show-restore-message__");
+  }
+
+  // Check if we should show the reset message (after page reload)
+  if (localStorage.getItem("__show-reset-message__")) {
+    showNotification("Website reset to initial state", "success");
+    localStorage.removeItem("__show-reset-message__");
   }
 
   // init
