@@ -521,13 +521,11 @@
       color: var(--muted);
       text-align: center;
       padding: 10px;
+      cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
       user-select: none;
-    }
-
-    .image-slot {
-      pointer-events: auto;
+      overflow: visible;
     }
 
     .image-slot:hover {
@@ -539,26 +537,13 @@
     }
 
     .image-slot img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 20px;
       cursor: grab;
       touch-action: none;
       position: relative;
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 100%;
-      pointer-events: none;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .app.edit-mode .image-slot img {
-      pointer-events: none;
-    }
-
-    .app.edit-mode .image-slot .resize-handle {
-      pointer-events: auto;
     }
 
     .image-slot img:active {
@@ -586,38 +571,38 @@
       opacity: 0;
       transition: opacity 0.2s ease;
       z-index: 10;
-      pointer-events: none;
     }
 
     .image-slot .resize-handle.tl {
-      top: 5px;
-      left: 5px;
-    }
-
-    .image-slot .resize-handle.tr {
-      top: 5px;
-      right: 5px;
-    }
-
-    .image-slot .resize-handle.bl {
-      bottom: 5px;
-      left: 5px;
-    }
-
-    .image-slot .resize-handle.br {
-      bottom: 5px;
-      right: 5px;
-    }
-
-    .app.edit-mode .image-slot .resize-handle {
-      opacity: 1;
-      pointer-events: auto;
+      top: -6px;
+      left: -6px;
       cursor: nwse-resize;
     }
 
-    .app.edit-mode .image-slot .resize-handle.tr,
-    .app.edit-mode .image-slot .resize-handle.bl {
+    .image-slot .resize-handle.tr {
+      top: -6px;
+      right: -6px;
       cursor: nesw-resize;
+    }
+
+    .image-slot .resize-handle.bl {
+      bottom: -6px;
+      left: -6px;
+      cursor: nesw-resize;
+    }
+
+    .image-slot .resize-handle.br {
+      bottom: -6px;
+      right: -6px;
+      cursor: nwse-resize;
+    }
+
+    .image-slot:hover .resize-handle {
+      opacity: 1;
+    }
+
+    .image-slot:hover .resize-handle {
+      opacity: 1;
     }
 
     /* SLIDE ACCUEIL – taille XXL */
@@ -1347,20 +1332,77 @@
     /* ORGANISATEURS */
 
     .organizers-wrapper {
-      max-width: 650px;
-      margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
       padding: 8px;
+    }
+
+    .organizer-card {
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       position: relative;
-      padding-top: 20px;
-      padding-bottom: 420px;
+      overflow: visible;
+      width: 220px;
+    }
+
+    .organizer-card .resize-handle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: rgba(56, 189, 248, 0.8);
+      border-radius: 50%;
+      border: 2px solid white;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .organizer-card .resize-handle.left {
+      left: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: ew-resize;
+    }
+
+    .organizer-card .resize-handle.right {
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: ew-resize;
+    }
+
+    .organizer-card .resize-handle.top {
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: ns-resize;
+    }
+
+    .organizer-card .resize-handle.bottom {
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: ns-resize;
+    }
+
+    .organizer-card:hover .resize-handle {
+      opacity: 1;
     }
 
     .slide--remerciements .slide-inner {
       justify-content: center;
+      overflow: visible;
+      width: auto;
+      max-width: none;
+      padding: 20px 0;
+      margin: 0;
     }
 
     .slide--remerciements .organizers-wrapper {
@@ -1380,74 +1422,22 @@
       color: var(--muted);
       text-align: center;
       margin: 0;
-      position: absolute;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
     }
 
     .organizers-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      position: absolute;
-      top: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: fit-content;
-      overflow: visible;
-      z-index: 5;
+      margin-top: 6px;
+      width: max-content;
     }
 
     @media (max-width: 800px) {
       .organizers-grid {
-        grid-template-columns: repeat(2, minmax(0, auto));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    .organizer-card {
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(148, 163, 184, 0.9);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 130px;
-      transition: width 0.3s ease;
-      position: relative;
-      user-select: none;
-    }
-
-    .organizer-card .resize-handle {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: rgba(56, 189, 248, 0.8);
-      border-radius: 50%;
-      border: 2px solid white;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 10;
-      cursor: ew-resize;
-    }
-
-    .organizer-card .resize-handle.left {
-      left: -6px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .organizer-card .resize-handle.right {
-      right: -6px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .app.edit-mode .organizer-card:hover .resize-handle {
-      opacity: 1;
-    }
 
     .organizers-grid .organizer-card:nth-child(odd) {
       justify-content: flex-start;
@@ -1475,6 +1465,7 @@
         rgba(248,250,252,0.08),
         transparent 60%);
       flex-shrink: 0;
+      cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
       user-select: none;
@@ -1491,9 +1482,9 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      cursor: grab;
-      touch-action: none;
-      position: relative;
+      border-radius: 999px;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     .organizer-photo img:active {
@@ -1502,55 +1493,53 @@
 
     .organizer-photo .resize-handle {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       background: rgba(56, 189, 248, 0.8);
       border-radius: 50%;
-      border: 2px solid white;
+      border: 1.5px solid white;
       opacity: 0;
       transition: opacity 0.2s ease;
-      z-index: 10;
-      pointer-events: none;
+      z-index: 9999;
+      pointer-events: auto;
     }
 
     .organizer-photo .resize-handle.tl {
-      top: 5px;
-      left: 5px;
+      top: 50%;
+      left: -4px;
+      transform: translateY(-50%);
+      cursor: ew-resize;
     }
 
     .organizer-photo .resize-handle.tr {
-      top: 5px;
-      right: 5px;
+      top: 50%;
+      right: -4px;
+      transform: translateY(-50%);
+      cursor: ew-resize;
     }
 
     .organizer-photo .resize-handle.bl {
-      bottom: 5px;
-      left: 5px;
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: ns-resize;
     }
 
     .organizer-photo .resize-handle.br {
-      bottom: 5px;
-      right: 5px;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: ns-resize;
     }
 
-    .app.edit-mode .organizer-photo:hover .resize-handle {
+    .organizer-photo:hover .resize-handle {
       opacity: 1;
-      pointer-events: auto;
-      cursor: nwse-resize;
-    }
-
-    .app.edit-mode .organizer-photo:hover .resize-handle.tr,
-    .app.edit-mode .organizer-photo:hover .resize-handle.bl {
-      cursor: nesw-resize;
     }
 
     .organizer-info {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      flex: 1;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
     }
 
     .organizer-name {
@@ -1558,51 +1547,6 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: clamp(10px, 1.2vw, 12px);
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      position: relative;
-    }
-
-    .font-size-slider {
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.98);
-      border: 1px solid rgba(56, 189, 248, 0.8);
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 10px;
-      display: none;
-      z-index: 100;
-      white-space: nowrap;
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
-    }
-
-    .font-size-slider.visible {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .app:not(.edit-mode) .font-size-slider {
-      display: none !important;
-    }
-
-    .font-size-slider input[type="range"] {
-      width: 120px;
-    }
-
-    .font-size-slider span {
-      color: var(--accent-blue);
-      font-size: 11px;
-      font-family: "Orbitron", system-ui, sans-serif;
-      min-width: 35px;
-    }
-
-    .app:not(.edit-mode) .organizer-name,
-    .app:not(.edit-mode) .organizer-role {
-      pointer-events: none;
     }
 
     .organizer-name[contenteditable="true"] {
@@ -1625,8 +1569,6 @@
     .organizer-role {
       font-size: clamp(9px, 1vw, 11px);
       color: var(--muted);
-      word-wrap: break-word;
-      overflow-wrap: break-word;
     }
 
     /* SLIDE FINAL */
@@ -2925,7 +2867,6 @@
     
     element.addEventListener("dblclick", function(e) {
       e.stopPropagation();
-      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
       if (!element.hasAttribute("contenteditable")) {
         element.setAttribute("contenteditable", "true");
         element.focus();
@@ -2940,16 +2881,16 @@
 
     element.addEventListener("blur", function() {
       element.removeAttribute("contenteditable");
-      // Save to localStorage
+      // Save to localStorage - use innerHTML to preserve newlines
       if (element.dataset.editKey) {
-        localStorage.setItem("text-" + element.dataset.editKey, element.textContent);
+        localStorage.setItem("text-" + element.dataset.editKey, element.innerHTML);
       }
     });
     
-    // Also save on input changes
+    // Also save on input changes - use innerHTML to preserve newlines
     element.addEventListener("input", function() {
       if (element.dataset.editKey) {
-        localStorage.setItem("text-" + element.dataset.editKey, element.textContent);
+        localStorage.setItem("text-" + element.dataset.editKey, element.innerHTML);
       }
     });
 
@@ -2975,210 +2916,88 @@
     });
   }
 
-  // Make duo pills editable
-  document.querySelectorAll(".duo-pill").forEach(function(pill, index) {
-    var keyName = "duo-pill-" + index;
-    pill.dataset.editKey = keyName;
-    // Restore content before making editable
+  // Make poll labels editable (each gets unique persistent storage key)
+  document.querySelectorAll(".poll-label").forEach(function(pollEl, globalIndex) {
+    var slide = pollEl.closest(".slide");
+    var slideId = slide ? slide.id : "unknown";
+    var keyName = slideId + "-poll-label-" + globalIndex;
+    pollEl.dataset.editKey = keyName;
     var saved = localStorage.getItem("text-" + keyName);
     if (saved) {
-      pill.textContent = saved;
+      pollEl.innerHTML = saved;
+    }
+    makeEditable(pollEl);
+  });
+
+  // Make score names editable (each gets unique persistent storage key)
+  document.querySelectorAll(".score-name").forEach(function(scoreEl, globalIndex) {
+    var slide = scoreEl.closest(".slide");
+    var slideId = slide ? slide.id : "unknown";
+    var keyName = slideId + "-score-name-" + globalIndex;
+    scoreEl.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      scoreEl.innerHTML = saved;
+    }
+    makeEditable(scoreEl);
+  });
+
+  // Make duo pills editable (each gets unique persistent storage key)
+  document.querySelectorAll(".duo-pill").forEach(function(pill, globalIndex) {
+    var slide = pill.closest(".slide");
+    var slideId = slide ? slide.id : "unknown";
+    var keyName = slideId + "-duo-pill-" + globalIndex;
+    pill.dataset.editKey = keyName;
+    var saved = localStorage.getItem("text-" + keyName);
+    if (saved) {
+      pill.innerHTML = saved;
     }
     makeEditable(pill);
   });
 
-  // Make any element containing "Duo" text editable (simple direct approach)
+  // Make any element containing "duo" or "Duo" text editable
   document.querySelectorAll("*").forEach(function(el) {
-    var text = el.textContent.trim();
-    // Target any element with Duo in text that isn't already processed
-    if (text.toLowerCase().includes("duo") && !el.dataset.editKey) {
-      var keyName = "duo-content-" + el.className + "-" + Math.random().toString(36).substr(2, 9);
-      el.dataset.editKey = keyName;
-      var saved = localStorage.getItem("text-" + keyName);
-      if (saved) {
-        el.textContent = saved;
+    var text = el.textContent;
+    // Only target direct text nodes, avoid parent elements
+    if (el.children.length === 0 && (text.toLowerCase().includes("duo") || text.includes("Nom"))) {
+      // Skip if already processed as duo-pill or organizer element or score element or poll element
+      if (!el.classList.contains("duo-pill") && !el.classList.contains("organizer-name") && !el.classList.contains("organizer-role") && !el.classList.contains("score-name") && !el.classList.contains("poll-label")) {
+        var keyName = "text-" + el.tagName + "-" + (el.className || "default");
+        el.dataset.editKey = keyName;
+        // Restore content before making editable
+        var saved = localStorage.getItem("text-" + keyName);
+        if (saved) {
+          el.innerHTML = saved;
+        }
+        makeEditable(el);
       }
-      makeEditable(el);
     }
   });
 
-  // Make organizer names editable
-  document.querySelectorAll(".organizer-name").forEach(function(name, index) {
-    var keyName = "organizer-name-" + index;
-    name.dataset.editKey = keyName;
-    // Restore content before making editable
+  // Make organizer names and roles editable (each gets unique persistent storage key)
+  document.querySelectorAll(".organizer-name").forEach(function(nameEl, globalIndex) {
+    var slide = nameEl.closest(".slide");
+    var slideId = slide ? slide.id : "unknown";
+    var keyName = slideId + "-organizer-name-" + globalIndex;
+    nameEl.dataset.editKey = keyName;
     var saved = localStorage.getItem("text-" + keyName);
     if (saved) {
-      name.textContent = saved;
+      nameEl.innerHTML = saved;
     }
-    makeEditable(name);
+    makeEditable(nameEl);
   });
 
-  // Make organizer roles editable
-  document.querySelectorAll(".organizer-role").forEach(function(role, index) {
-    var keyName = "organizer-role-" + index;
-    role.dataset.editKey = keyName;
-    // Restore content before making editable
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      role.textContent = saved;
+  document.querySelectorAll(".organizer-role").forEach(function(roleEl, globalIndex) {
+    var slide = roleEl.closest(".slide");
+    var slideId = slide ? slide.id : "unknown";
+    var keyRole = slideId + "-organizer-role-" + globalIndex;
+    roleEl.dataset.editKey = keyRole;
+    var savedRole = localStorage.getItem("text-" + keyRole);
+    if (savedRole) {
+      roleEl.innerHTML = savedRole;
     }
-    makeEditable(role);
+    makeEditable(roleEl);
   });
-
-  // Make score names editable (for scoreboard pages)
-  document.querySelectorAll(".score-name").forEach(function(name, index) {
-    var keyName = "score-name-" + index;
-    name.dataset.editKey = keyName;
-    // Restore content before making editable
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      name.textContent = saved;
-    }
-    makeEditable(name);
-  });
-
-  // Make slide titles editable
-  document.querySelectorAll(".slide-title").forEach(function(title, index) {
-    var keyName = "slide-title-" + index;
-    title.dataset.editKey = keyName;
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      title.textContent = saved;
-    }
-    makeEditable(title);
-    setupFontSizeSlider(title);
-  });
-
-  // Make slide subtitles editable
-  document.querySelectorAll(".slide-subtitle").forEach(function(subtitle, index) {
-    var keyName = "slide-subtitle-" + index;
-    subtitle.dataset.editKey = keyName;
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      subtitle.textContent = saved;
-    }
-    makeEditable(subtitle);
-    setupFontSizeSlider(subtitle);
-  });
-
-  // Make organizers intro text editable
-  document.querySelectorAll(".organizers-intro").forEach(function(intro, index) {
-    var keyName = "organizers-intro-" + index;
-    intro.dataset.editKey = keyName;
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      intro.textContent = saved;
-    }
-    makeEditable(intro);
-    setupFontSizeSlider(intro);
-  });
-
-  // Make organizers thanks text editable
-  document.querySelectorAll(".organizers-thanks").forEach(function(thanks, index) {
-    var keyName = "organizers-thanks-" + index;
-    thanks.dataset.editKey = keyName;
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      thanks.textContent = saved;
-    }
-    makeEditable(thanks);
-    setupFontSizeSlider(thanks);
-  });
-
-  // Make card titles editable
-  document.querySelectorAll(".card-title").forEach(function(title, index) {
-    var keyName = "card-title-" + index;
-    title.dataset.editKey = keyName;
-    var saved = localStorage.getItem("text-" + keyName);
-    if (saved) {
-      title.textContent = saved;
-    }
-    makeEditable(title);
-    setupFontSizeSlider(title);
-  });
-
-  // Make list items editable
-  document.querySelectorAll("li").forEach(function(li, index) {
-    if (!li.dataset.editKey) {
-      var keyName = "list-item-" + index;
-      li.dataset.editKey = keyName;
-      var saved = localStorage.getItem("text-" + keyName);
-      if (saved) {
-        li.textContent = saved;
-      }
-      makeEditable(li);
-      setupFontSizeSlider(li);
-    }
-  });
-
-  // Make paragraphs editable
-  document.querySelectorAll("p").forEach(function(p, index) {
-    if (!p.dataset.editKey) {
-      var keyName = "paragraph-" + index;
-      p.dataset.editKey = keyName;
-      var saved = localStorage.getItem("text-" + keyName);
-      if (saved) {
-        p.textContent = saved;
-      }
-      makeEditable(p);
-      setupFontSizeSlider(p);
-    }
-  });
-
-  // Make floating pills editable
-  document.querySelectorAll(".floating-pill").forEach(function(pill, index) {
-    if (!pill.dataset.editKey) {
-      var keyName = "floating-pill-" + index;
-      pill.dataset.editKey = keyName;
-      var saved = localStorage.getItem("text-" + keyName);
-      if (saved) {
-        pill.textContent = saved;
-      }
-      makeEditable(pill);
-      setupFontSizeSlider(pill);
-    }
-  });
-
-  // Make ALL remaining text content editable
-  function makeAllTextEditable() {
-    var counter = 0;
-    document.querySelectorAll("*").forEach(function(el) {
-      // Skip if already has editKey
-      if (el.dataset.editKey) return;
-      // Skip if has child elements (except br)
-      var hasChildren = Array.from(el.children).some(function(child) {
-        return child.tagName !== "BR";
-      });
-      if (hasChildren) return;
-      
-      // Get text content
-      var text = el.textContent.trim();
-      if (!text || text.length === 0) return;
-      
-      // Skip interactive elements and special cases
-      if (el.classList.contains("timer-display") || 
-          el.classList.contains("topbar-progress-fill") ||
-          el.classList.contains("resize-handle") ||
-          el.classList.contains("topbar-tag") ||
-          el.classList.contains("live-dot") ||
-          el.tagName === "BUTTON" ||
-          el.tagName === "INPUT" ||
-          el.tagName === "STYLE" ||
-          el.tagName === "SCRIPT") return;
-      
-      var keyName = "text-editable-" + (counter++);
-      el.dataset.editKey = keyName;
-      var saved = localStorage.getItem("text-" + keyName);
-      if (saved) {
-        el.textContent = saved;
-      }
-      makeEditable(el);
-      setupFontSizeSlider(el);
-    });
-  }
-  
-  makeAllTextEditable();
 
   // Handle image uploads and resizing
   var imageStorageCounter = 0;
@@ -3197,20 +3016,7 @@
     document.body.appendChild(input);
 
     container.addEventListener("dblclick", function(e) {
-      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
-      // Skip if clicking on special elements like pills, buttons, spans
-      if (e.target.classList.contains("floating-pill") ||
-          e.target.classList.contains("duo-pill") ||
-          e.target.classList.contains("topbar-tag") ||
-          e.target.tagName === "BUTTON" ||
-          e.target.tagName === "SPAN" ||
-          e.target.getAttribute("data-edit-key")) {
-        return;
-      }
-      // Only trigger file upload if clicking directly on container with no image, or on an existing image
-      if (e.target === container && !container.querySelector("img")) {
-        input.click();
-      } else if (e.target.tagName === "IMG") {
+      if (e.target.tagName === "IMG" || !container.querySelector("img")) {
         input.click();
       }
     });
@@ -3231,17 +3037,12 @@
           img.src = event.target.result;
           // Save to localStorage
           localStorage.setItem("image-" + imageId, event.target.result);
-          
-          // Wait for image to load, then save dimensions
-          img.onload = function() {
-            var width = img.naturalWidth || 200;
-            var height = img.naturalHeight || 200;
-            img.style.width = width + "px";
-            img.style.height = height + "px";
-            localStorage.setItem("image-" + imageId + "-width", width);
-            localStorage.setItem("image-" + imageId + "-height", height);
-            setupImageResize(img, container);
-          };
+          // Save dimensions if they exist
+          if (img.offsetWidth && img.offsetHeight) {
+            localStorage.setItem("image-" + imageId + "-width", img.offsetWidth);
+            localStorage.setItem("image-" + imageId + "-height", img.offsetHeight);
+          }
+          setupImageResize(img, container);
         };
         reader.readAsDataURL(e.target.files[0]);
       }
@@ -3278,311 +3079,292 @@
     });
   }
 
-  var imageResizeState = {
-    isResizing: false,
-    startX: 0,
-    startY: 0,
-    startWidth: 0,
-    startHeight: 0,
-    corner: null,
-    container: null,
-    imageId: null
-  };
-
   function setupImageResize(img, container) {
-    if (!img) return;
-    
     var handles = container.querySelectorAll(".resize-handle");
+    var isResizing = false;
+    var startX, startY, startWidth, startHeight, resizeCorner;
+
     handles.forEach(function(handle) {
       handle.addEventListener("mousedown", function(e) {
-        if (!document.querySelector(".app").classList.contains("edit-mode")) return;
-        
         e.preventDefault();
         e.stopPropagation();
-        
-        imageResizeState.isResizing = true;
-        imageResizeState.startX = e.clientX;
-        imageResizeState.startY = e.clientY;
-        imageResizeState.startWidth = img.offsetWidth;
-        imageResizeState.startHeight = img.offsetHeight;
-        imageResizeState.corner = handle.classList[1];
-        imageResizeState.container = container;
-        imageResizeState.imageId = container.dataset.imageId;
+        isResizing = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = img.offsetWidth;
+        startHeight = img.offsetHeight;
+        resizeCorner = handle.className.split(" ")[1]; // tl, tr, bl, br
         img.style.cursor = "grabbing";
       });
     });
-  }
 
-  document.addEventListener("mousemove", function(e) {
-    if (!imageResizeState.isResizing || !imageResizeState.container) return;
-    
-    var img = imageResizeState.container.querySelector("img");
-    if (!img) return;
-    
-    var deltaX = e.clientX - imageResizeState.startX;
-    var deltaY = e.clientY - imageResizeState.startY;
-    var corner = imageResizeState.corner;
-    
-    var newWidth = imageResizeState.startWidth;
-    var newHeight = imageResizeState.startHeight;
-    
-    if (corner === "br") {
-      newWidth = imageResizeState.startWidth + deltaX;
-      newHeight = imageResizeState.startHeight + deltaY;
-    } else if (corner === "bl") {
-      newWidth = imageResizeState.startWidth - deltaX;
-      newHeight = imageResizeState.startHeight + deltaY;
-    } else if (corner === "tr") {
-      newWidth = imageResizeState.startWidth + deltaX;
-      newHeight = imageResizeState.startHeight - deltaY;
-    } else if (corner === "tl") {
-      newWidth = imageResizeState.startWidth - deltaX;
-      newHeight = imageResizeState.startHeight - deltaY;
-    }
-    
-    if (newWidth > 30 && newHeight > 30) {
-      img.style.width = newWidth + "px";
-      img.style.height = newHeight + "px";
-      if (imageResizeState.imageId) {
-        localStorage.setItem("image-" + imageResizeState.imageId + "-width", newWidth);
-        localStorage.setItem("image-" + imageResizeState.imageId + "-height", newHeight);
+    document.addEventListener("mousemove", function(e) {
+      if (isResizing) {
+        var deltaX = e.clientX - startX;
+        var deltaY = e.clientY - startY;
+        var newWidth = startWidth;
+        var newHeight = startHeight;
+
+        if (resizeCorner === "br") {
+          newWidth = startWidth + deltaX;
+          newHeight = startHeight + deltaY;
+        } else if (resizeCorner === "bl") {
+          newWidth = startWidth - deltaX;
+          newHeight = startHeight + deltaY;
+        } else if (resizeCorner === "tr") {
+          newWidth = startWidth + deltaX;
+          newHeight = startHeight - deltaY;
+        } else if (resizeCorner === "tl") {
+          newWidth = startWidth - deltaX;
+          newHeight = startHeight - deltaY;
+        }
+
+        // Maintain aspect ratio and minimum size
+        if (newWidth > 30 && newHeight > 30) {
+          img.style.width = newWidth + "px";
+          img.style.height = newHeight + "px";
+          // Save dimensions to localStorage
+          var imageId = img.closest(".image-slot, .organizer-photo").dataset.imageId;
+          if (imageId) {
+            localStorage.setItem("image-" + imageId + "-width", newWidth);
+            localStorage.setItem("image-" + imageId + "-height", newHeight);
+          }
+        }
       }
-      // Update resize handle positions to stick with image corners
-      updateImageResizeHandles(img, imageResizeState.container);
-    }
-  });
+    });
 
-  function updateImageResizeHandles(img, container) {
-    if (!img) return;
-    var rect = img.getBoundingClientRect();
-    var containerRect = container.getBoundingClientRect();
-    
-    var handles = container.querySelectorAll(".resize-handle");
-    handles.forEach(function(handle) {
-      var corner = handle.classList[1];
-      if (corner === "tl") {
-        handle.style.top = (rect.top - containerRect.top) + "px";
-        handle.style.left = (rect.left - containerRect.left) + "px";
-      } else if (corner === "tr") {
-        handle.style.top = (rect.top - containerRect.top) + "px";
-        handle.style.right = (containerRect.right - rect.right) + "px";
-      } else if (corner === "bl") {
-        handle.style.bottom = (containerRect.bottom - rect.bottom) + "px";
-        handle.style.left = (rect.left - containerRect.left) + "px";
-      } else if (corner === "br") {
-        handle.style.bottom = (containerRect.bottom - rect.bottom) + "px";
-        handle.style.right = (containerRect.right - rect.right) + "px";
+    document.addEventListener("mouseup", function() {
+      if (isResizing) {
+        isResizing = false;
+        img.style.cursor = "grab";
       }
     });
   }
-
-  document.addEventListener("mouseup", function() {
-    if (imageResizeState.isResizing && imageResizeState.container) {
-      var img = imageResizeState.container.querySelector("img");
-      if (img) img.style.cursor = "grab";
-    }
-    imageResizeState.isResizing = false;
-    imageResizeState.container = null;
-  });
 
   // Apply image handling to all image slots
   document.querySelectorAll(".image-slot").forEach(function(slot) {
     setupImageElement(slot);
-    // Ensure resize handles exist even without image
-    if (!slot.querySelector(".resize-handle")) {
-      createResizeHandles(slot);
-    }
-    // Setup resize for existing or newly created image
+    // If there's already an image in this slot, create resize handles for it
     var img = slot.querySelector("img");
-    if (img) {
+    if (img && slot.querySelectorAll(".resize-handle").length === 0) {
+      createResizeHandles(slot);
+      // Restore saved dimensions if they exist
+      var imageId = slot.dataset.imageId;
+      if (imageId) {
+        var savedWidth = localStorage.getItem("image-" + imageId + "-width");
+        var savedHeight = localStorage.getItem("image-" + imageId + "-height");
+        if (savedWidth && savedHeight) {
+          img.style.width = savedWidth + "px";
+          img.style.height = savedHeight + "px";
+        }
+      }
       setupImageResize(img, slot);
     }
   });
 
-  // Apply image handling to organizer photos
+  // Apply image handling to organizer photos with zoom support
   document.querySelectorAll(".organizer-photo").forEach(function(photo) {
     setupImageElement(photo);
-    // Ensure resize handles exist even without image
-    if (!photo.querySelector(".resize-handle")) {
-      createResizeHandles(photo);
-    }
-    // Setup resize for existing or newly created image
+    // If there's already an image in this photo, create resize handles for it
     var img = photo.querySelector("img");
-    if (img) {
-      setupImageResize(img, photo);
+    if (img && photo.querySelectorAll(".resize-handle").length === 0) {
+      createResizeHandles(photo);
+      // Restore saved dimensions if they exist
+      var imageId = photo.dataset.imageId;
+      if (imageId) {
+        var savedWidth = localStorage.getItem("image-" + imageId + "-width");
+        var savedHeight = localStorage.getItem("image-" + imageId + "-height");
+        var savedZoom = localStorage.getItem("image-" + imageId + "-zoom");
+        var savedOffsetX = localStorage.getItem("image-" + imageId + "-offsetX");
+        var savedOffsetY = localStorage.getItem("image-" + imageId + "-offsetY");
+        if (savedWidth && savedHeight) {
+          photo.style.width = savedWidth + "px";
+          photo.style.height = savedHeight + "px";
+        }
+        if (savedOffsetX || savedOffsetY) {
+          // Panning removed
+        }
+        if (savedZoom) {
+          img.style.transform = "scale(" + savedZoom + ")";
+        }
+      }
+      setupPhotoResize(img, photo);
     }
   });
-  
-  // Function to recalculate and sync organizer card widths
-  function syncOrganizerCardWidths() {
-    var cards = document.querySelectorAll(".organizer-card");
-    if (cards.length === 0) return;
-    
-    // Reset widths to auto to measure content
-    cards.forEach(function(card) {
-      card.style.width = "auto";
+
+  function setupPhotoResize(img, container) {
+    var handles = container.querySelectorAll(".resize-handle");
+    var isResizing = false;
+    var startX, startY, startWidth, startHeight, resizeHandle;
+    var minSize = 50;
+
+    handles.forEach(function(handle) {
+      handle.addEventListener("mousedown", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = container.offsetWidth;
+        startHeight = container.offsetHeight;
+        resizeHandle = handle.className.split(" ")[1];
+      }, false);
     });
-    
-    // Find the widest card
-    var maxWidth = 0;
-    cards.forEach(function(card) {
-      var width = card.offsetWidth;
-      if (width > maxWidth) {
-        maxWidth = width;
+
+    document.addEventListener("mousemove", function(e) {
+      if (isResizing) {
+        var deltaX = e.clientX - startX;
+        var deltaY = e.clientY - startY;
+        var newWidth = startWidth + deltaX;
+        var newHeight = startHeight + deltaY;
+
+        if (newWidth > minSize && newHeight > minSize) {
+          container.style.width = newWidth + "px";
+          container.style.height = newHeight + "px";
+          var imageId = container.dataset.imageId;
+          if (imageId) {
+            localStorage.setItem("image-" + imageId + "-width", newWidth);
+            localStorage.setItem("image-" + imageId + "-height", newHeight);
+          }
+        }
       }
-    });
-    
-    // Apply max width to all cards
-    cards.forEach(function(card) {
-      card.style.width = maxWidth + "px";
+    }, false);
+
+    document.addEventListener("mouseup", function() {
+      isResizing = false;
+    }, false);
+  }
+
+  // Handle organizer cards resizing (horizontal and vertical, all cards same size)
+  var organizerCards = document.querySelectorAll(".organizer-card");
+  
+  // Restore saved card width and height if they exist
+  var savedCardWidth = localStorage.getItem("organizer-cards-width");
+  var savedCardHeight = localStorage.getItem("organizer-cards-height");
+  if (savedCardWidth) {
+    organizerCards.forEach(function(card) {
+      card.style.width = savedCardWidth + "px";
     });
   }
-  
-  // Setup resizable organizer cards
-  var bubbleResizeState = {
-    isResizing: false,
-    card: null,
-    startX: 0,
-    startWidth: 0,
-    cardIndex: 0
-  };
-  
-  function setupOrganizerCardResize(card) {
-    // Create resize handles
-    var leftHandle = document.createElement("div");
-    leftHandle.className = "resize-handle left";
-    card.appendChild(leftHandle);
-    
-    var rightHandle = document.createElement("div");
-    rightHandle.className = "resize-handle right";
-    card.appendChild(rightHandle);
-    
-    var cardIndex = Array.from(card.parentNode.children).indexOf(card);
-    
-    function startResize(e) {
-      if (!document.querySelector(".app").classList.contains("edit-mode")) return;
+  if (savedCardHeight) {
+    organizerCards.forEach(function(card) {
+      card.style.height = savedCardHeight + "px";
+    });
+  }
+
+  organizerCards.forEach(function(card, cardIndex) {
+    // Create resize handles for left, right, top, bottom
+    var handleLeft = document.createElement("div");
+    handleLeft.className = "resize-handle left";
+    card.appendChild(handleLeft);
+
+    var handleRight = document.createElement("div");
+    handleRight.className = "resize-handle right";
+    card.appendChild(handleRight);
+
+    var handleTop = document.createElement("div");
+    handleTop.className = "resize-handle top";
+    card.appendChild(handleTop);
+
+    var handleBottom = document.createElement("div");
+    handleBottom.className = "resize-handle bottom";
+    card.appendChild(handleBottom);
+
+    var isResizing = false;
+    var startX, startY, startWidth, startHeight, resizeType;
+
+    // Width handles
+    handleLeft.addEventListener("mousedown", function(e) {
       e.preventDefault();
       e.stopPropagation();
-      bubbleResizeState.isResizing = true;
-      bubbleResizeState.card = card;
-      bubbleResizeState.cardIndex = cardIndex;
-      bubbleResizeState.startX = e.clientX;
-      bubbleResizeState.startWidth = card.offsetWidth;
-    }
-    
-    leftHandle.addEventListener("mousedown", startResize);
-    rightHandle.addEventListener("mousedown", startResize);
-    
-    // Load saved width
-    var savedWidth = localStorage.getItem("organizer-card-" + cardIndex + "-width");
-    if (savedWidth) {
-      card.style.width = savedWidth + "px";
-    }
-  }
-  
-  // Global mousemove and mouseup for bubble resizing
-  document.addEventListener("mousemove", function(e) {
-    if (bubbleResizeState.isResizing && bubbleResizeState.card) {
-      var card = bubbleResizeState.card;
-      var deltaX = e.clientX - bubbleResizeState.startX;
-      var newWidth = bubbleResizeState.startWidth + (deltaX * 2);
-      
-      if (newWidth > 150) {
-        // Save and apply to this card
-        card.style.width = newWidth + "px";
-        
-        // Apply same width to all other cards in the grid and save for all
-        var allCards = document.querySelectorAll(".organizer-card");
-        allCards.forEach(function(c, index) {
-          c.style.width = newWidth + "px";
-          localStorage.setItem("organizer-card-" + index + "-width", newWidth);
-        });
-      }
-    }
-  }, false);
-  
-  document.addEventListener("mouseup", function(e) {
-    if (bubbleResizeState.isResizing) {
-      bubbleResizeState.isResizing = false;
-      bubbleResizeState.card = null;
-    }
-  }, false);
-  
-  // Restore all bubble sizes from localStorage on page load
-  setTimeout(function() {
-    var allCards = document.querySelectorAll(".organizer-card");
-    var maxSavedWidth = 0;
-    
-    // Find the maximum saved width
-    allCards.forEach(function(card, index) {
-      var savedWidth = localStorage.getItem("organizer-card-" + index + "-width");
-      if (savedWidth) {
-        var width = parseInt(savedWidth, 10);
-        if (width > maxSavedWidth) {
-          maxSavedWidth = width;
+      isResizing = true;
+      startX = e.clientX;
+      startWidth = card.offsetWidth;
+      resizeType = "width";
+    });
+
+    handleRight.addEventListener("mousedown", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing = true;
+      startX = e.clientX;
+      startWidth = card.offsetWidth;
+      resizeType = "width";
+    });
+
+    // Height handles
+    handleTop.addEventListener("mousedown", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing = true;
+      startY = e.clientY;
+      startHeight = card.offsetHeight;
+      resizeType = "height";
+    });
+
+    handleBottom.addEventListener("mousedown", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizing = true;
+      startY = e.clientY;
+      startHeight = card.offsetHeight;
+      resizeType = "height";
+    });
+
+    document.addEventListener("mousemove", function(e) {
+      if (isResizing) {
+        if (resizeType === "width") {
+          var deltaX = e.clientX - startX;
+          var isLeft = handleLeft.classList.contains("left") || e.target === handleLeft;
+          var isRight = handleRight.classList.contains("right") || e.target === handleRight;
+          var newWidth;
+          
+          if (isLeft) {
+            newWidth = startWidth - deltaX;  // drag left = shrink
+          } else if (isRight) {
+            newWidth = startWidth - deltaX;  // drag right = shrink (opposite)
+          }
+
+          // Maintain minimum width
+          if (newWidth > 100) {
+            // Update ALL cards with the same width
+            organizerCards.forEach(function(c) {
+              c.style.width = newWidth + "px";
+            });
+            localStorage.setItem("organizer-cards-width", newWidth);
+          }
+        } else if (resizeType === "height") {
+          var deltaY = e.clientY - startY;
+          var isTop = handleTop.classList.contains("top") || e.target === handleTop;
+          var isBottom = handleBottom.classList.contains("bottom") || e.target === handleBottom;
+          var newHeight;
+          
+          if (isTop) {
+            newHeight = startHeight - deltaY;  // drag up = shrink
+          } else if (isBottom) {
+            newHeight = startHeight - deltaY;  // drag down = shrink (opposite)
+          }
+
+          // No minimum height limit
+          if (newHeight > 10) {
+            // Update ALL cards with the same height
+            organizerCards.forEach(function(c) {
+              c.style.height = newHeight + "px";
+            });
+            localStorage.setItem("organizer-cards-height", newHeight);
+          }
         }
       }
     });
-    
-    // Apply the maximum saved width to all cards if any was found
-    if (maxSavedWidth > 0) {
-      allCards.forEach(function(card, index) {
-        card.style.width = maxSavedWidth + "px";
-      });
-    }
-    
-    // Setup resize handlers after loading saved widths
-    allCards.forEach(function(card) {
-      setupOrganizerCardResize(card);
-    });
-  }, 100);
-  
-  // Setup font size sliders for organizer text
-  function setupFontSizeSlider(textEl) {
-    var slider = document.createElement("div");
-    slider.className = "font-size-slider";
-    slider.innerHTML = '<input type="range" min="8" max="20" value="12" step="0.5"><span>12px</span>';
-    textEl.parentNode.insertBefore(slider, textEl);
-    
-    var input = slider.querySelector("input");
-    var span = slider.querySelector("span");
-    
-    // Load saved font size
-    var textKey = textEl.dataset.editKey;
-    var savedSize = localStorage.getItem("font-size-" + textKey);
-    if (savedSize) {
-      input.value = savedSize;
-      textEl.style.fontSize = savedSize + "px";
-      span.textContent = savedSize + "px";
-    }
-    
-    textEl.addEventListener("click", function(e) {
-      e.stopPropagation();
-      slider.classList.toggle("visible");
-    });
-    
-    input.addEventListener("input", function(e) {
-      var size = input.value;
-      textEl.style.fontSize = size + "px";
-      span.textContent = size + "px";
-      // Save font size
-      if (textKey) {
-        localStorage.setItem("font-size-" + textKey, size);
+
+    document.addEventListener("mouseup", function() {
+      if (isResizing) {
+        isResizing = false;
+        resizeType = null;
       }
     });
-    
-    // Close slider when clicking outside
-    document.addEventListener("click", function(e) {
-      if (!slider.contains(e.target) && e.target !== textEl) {
-        slider.classList.remove("visible");
-      }
-    });
-  }
-  
-  // Apply font size sliders to organizer names and roles
-  document.querySelectorAll(".organizer-name, .organizer-role").forEach(function(el) {
-    setupFontSizeSlider(el);
   });
+
 
   function updateProgress() {
     if (!progressFill || !slides.length) return;
@@ -3611,6 +3393,14 @@
     updateProgress();
     triggerFlash();
 
+    // Handle overflow for remerciements slide
+    var main = document.querySelector("main");
+    if (next.classList.contains("slide--remerciements")) {
+      main.style.overflow = "visible";
+    } else {
+      main.style.overflow = "hidden";
+    }
+
     // Timers no longer auto-start; user must click Start button
   }
 
@@ -3624,13 +3414,6 @@
   }
 
   document.addEventListener("keydown", function (e) {
-    // Toggle edit mode with 'o' key
-    if (e.key === "o" || e.key === "O") {
-      e.preventDefault();
-      var app = document.querySelector(".app");
-      app.classList.toggle("edit-mode");
-    }
-    
     // Check if user is editing a contenteditable element
     var isEditing = document.activeElement && document.activeElement.hasAttribute("contenteditable");
     
@@ -3759,9 +3542,6 @@
 
   // init
   updateProgress();
-  
-  // Start in presentation mode (tools hidden)
-  document.querySelector(".app").classList.remove("edit-mode");
 </script>
 </body>
 </html>
