@@ -2459,7 +2459,7 @@
             <div>
               <div class="card-title">Chrono défi 4</div>
               <div class="timer-block">
-                <div class="timer-big timer-display" data-duration="240">04:00</div>
+                <div class="timer-big timer-display" data-duration="600">10:00</div>
               </div>
               <div class="btn-row">
                 <button class="btn btn-ghost js-start-timer">Start</button>
@@ -3538,6 +3538,44 @@
     if (!isNaN(base)) {
       el.textContent = formatTime(base);
     }
+    // Allow double-click to edit duration
+    el.addEventListener("dblclick", function(e) {
+      e.stopPropagation();
+      if (!el.hasAttribute("contenteditable")) {
+        el.setAttribute("contenteditable", "true");
+        el.focus();
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+    
+    el.addEventListener("blur", function() {
+      el.removeAttribute("contenteditable");
+      // Parse the input as MM:SS format
+      var input = el.textContent.trim();
+      var parts = input.split(":");
+      if (parts.length === 2) {
+        var mins = parseInt(parts[0], 10);
+        var secs = parseInt(parts[1], 10);
+        if (!isNaN(mins) && !isNaN(secs)) {
+          var totalSeconds = mins * 60 + secs;
+          el.dataset.duration = totalSeconds;
+          el.textContent = formatTime(totalSeconds);
+          timerRemaining = totalSeconds;
+          timerDisplayEl = el;
+        }
+      }
+    });
+    
+    el.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        el.blur();
+      }
+    });
   });
 
   // init
