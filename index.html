@@ -605,6 +605,55 @@
       opacity: 1;
     }
 
+    /* Notification popup */
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #38bdf8, #06b6d4);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      z-index: 1000;
+      box-shadow: 0 8px 32px rgba(56, 189, 248, 0.4);
+      animation: slideDown 0.3s ease-out, slideUp 0.3s ease-in 3.7s;
+    }
+
+    .notification.error {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+    }
+
+    .notification.success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+    }
+
     /* SLIDE ACCUEIL – taille XXL */
 
     .slide--accueil .slide-inner {
@@ -3582,6 +3631,16 @@
   var keysPressed = {};
   var savedState = null;
 
+  function showNotification(message, type) {
+    var notification = document.createElement("div");
+    notification.className = "notification " + (type || "success");
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(function() {
+      notification.remove();
+    }, 4000);
+  }
+
   document.addEventListener("keydown", function(e) {
     keysPressed[e.key] = true;
     
@@ -3621,11 +3680,13 @@
         savedState["visual-" + id + "-top"] = el.dataset.top;
       }
     });
+    showNotification("✓ State saved!", "success");
     console.log("State saved!");
   }
 
   function restoreState() {
     if (!savedState) {
+      showNotification("No saved state to restore", "error");
       console.log("No saved state to restore");
       return;
     }
@@ -3660,6 +3721,7 @@
       }
     });
     
+    showNotification("✓ State restored!", "success");
     // Refresh the page to fully apply the state
     location.reload();
   }
