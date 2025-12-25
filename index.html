@@ -3678,27 +3678,17 @@
 
   function saveState() {
     savedState = {};
-    // Save all localStorage entries
+    // Save all localStorage entries (everything!)
     for (var i = 0; i < localStorage.length; i++) {
       var key = localStorage.key(i);
       if (key !== "__backup-state__") { // Don't save the backup itself
         savedState[key] = localStorage.getItem(key);
       }
     }
-    // Also save image resize data and organizer card sizes
-    document.querySelectorAll("[data-width], [data-height], [data-left], [data-top]").forEach(function(el) {
-      var id = el.id || el.className;
-      if (id) {
-        savedState["visual-" + id + "-width"] = el.dataset.width;
-        savedState["visual-" + id + "-height"] = el.dataset.height;
-        savedState["visual-" + id + "-left"] = el.dataset.left;
-        savedState["visual-" + id + "-top"] = el.dataset.top;
-      }
-    });
     // Persist the saved state to localStorage
     localStorage.setItem("__backup-state__", JSON.stringify(savedState));
     showNotification("✓ State saved!", "success");
-    console.log("State saved and persisted!");
+    console.log("State saved and persisted! Keys saved:", Object.keys(savedState));
   }
 
   function restoreState() {
@@ -3715,30 +3705,8 @@
       }
     }
     
-    // Restore visual properties
-    document.querySelectorAll("[data-width], [data-height], [data-left], [data-top]").forEach(function(el) {
-      var id = el.id || el.className;
-      if (id) {
-        if (savedState["visual-" + id + "-width"]) {
-          el.dataset.width = savedState["visual-" + id + "-width"];
-          el.style.width = el.dataset.width;
-        }
-        if (savedState["visual-" + id + "-height"]) {
-          el.dataset.height = savedState["visual-" + id + "-height"];
-          el.style.height = el.dataset.height;
-        }
-        if (savedState["visual-" + id + "-left"]) {
-          el.dataset.left = savedState["visual-" + id + "-left"];
-          el.style.left = el.dataset.left;
-        }
-        if (savedState["visual-" + id + "-top"]) {
-          el.dataset.top = savedState["visual-" + id + "-top"];
-          el.style.top = el.dataset.top;
-        }
-      }
-    });
-    
-    showNotification("✓ State restored!", "success");
+    showNotification("Save restored", "success");
+    console.log("State restored! Keys restored:", Object.keys(savedState));
     // Refresh the page to fully apply the state
     location.reload();
   }
