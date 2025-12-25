@@ -3631,6 +3631,19 @@
   var keysPressed = {};
   var savedState = null;
 
+  // Load saved state from localStorage on page load
+  function loadSavedStateFromStorage() {
+    var stored = localStorage.getItem("__backup-state__");
+    if (stored) {
+      try {
+        savedState = JSON.parse(stored);
+        console.log("Loaded saved state from storage");
+      } catch (e) {
+        console.log("Failed to parse saved state");
+      }
+    }
+  }
+
   function showNotification(message, type) {
     var notification = document.createElement("div");
     notification.className = "notification " + (type || "success");
@@ -3668,7 +3681,9 @@
     // Save all localStorage entries
     for (var i = 0; i < localStorage.length; i++) {
       var key = localStorage.key(i);
-      savedState[key] = localStorage.getItem(key);
+      if (key !== "__backup-state__") { // Don't save the backup itself
+        savedState[key] = localStorage.getItem(key);
+      }
     }
     // Also save image resize data and organizer card sizes
     document.querySelectorAll("[data-width], [data-height], [data-left], [data-top]").forEach(function(el) {
@@ -3680,8 +3695,10 @@
         savedState["visual-" + id + "-top"] = el.dataset.top;
       }
     });
+    // Persist the saved state to localStorage
+    localStorage.setItem("__backup-state__", JSON.stringify(savedState));
     showNotification("✓ State saved!", "success");
-    console.log("State saved!");
+    console.log("State saved and persisted!");
   }
 
   function restoreState() {
@@ -3725,6 +3742,9 @@
     // Refresh the page to fully apply the state
     location.reload();
   }
+
+  // Load any previously saved state when the page loads
+  loadSavedStateFromStorage();
 
   // init
   updateProgress();
