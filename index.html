@@ -3707,14 +3707,20 @@
     
     showNotification("Save restored", "success");
     console.log("State restored! Keys restored:", Object.keys(savedState));
-    // Refresh the page to fully apply the state (with delay to show notification)
-    setTimeout(function() {
-      location.reload();
-    }, 500);
+    // Set flag to show message after reload
+    localStorage.setItem("__show-restore-message__", "true");
+    // Refresh the page to fully apply the state
+    location.reload();
   }
 
   // Load any previously saved state when the page loads
   loadSavedStateFromStorage();
+
+  // Check if we should show the restore message (after page reload)
+  if (localStorage.getItem("__show-restore-message__")) {
+    showNotification("Save restored", "success");
+    localStorage.removeItem("__show-restore-message__");
+  }
 
   // init
   updateProgress();
