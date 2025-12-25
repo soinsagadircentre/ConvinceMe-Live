@@ -3707,8 +3707,10 @@
     
     showNotification("Save restored", "success");
     console.log("State restored! Keys restored:", Object.keys(savedState));
-    // Refresh the page to fully apply the state
-    location.reload();
+    // Refresh the page to fully apply the state (with delay to show notification)
+    setTimeout(function() {
+      location.reload();
+    }, 500);
   }
 
   // Load any previously saved state when the page loads
